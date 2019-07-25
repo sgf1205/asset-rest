@@ -62,6 +62,12 @@ public class RespInfo {
 		return new RespInfo(RespCodeEnum.SUCCESS.code);
 	}
 	
+	public static RespInfo success(Object data) {
+		RespInfo respInfo=success();
+		respInfo.setData(data);
+		return respInfo;
+	}
+	
 	public enum RespCodeEnum{
 		SUCCESS(0),
 		FAIL(1);
