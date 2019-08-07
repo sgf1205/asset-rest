@@ -25,4 +25,10 @@ public class AssetController {
 		assetDao.save(assetDo);
 		return RespInfo.success();
 	}
+	
+	@RequestMapping("/delete")
+	public RespInfo del(Long id) {
+		assetDao.deleteById(id);
+		return RespInfo.success();
+	}
 }

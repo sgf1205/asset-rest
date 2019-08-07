@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.sgf.asset.core.RespInfo;
@@ -30,9 +31,20 @@ public class OrganController {
 		return RespInfo.success();
 	}
 	
+	@RequestMapping("/delete")
+	public RespInfo delete(Long id) {
+		organDao.deleteById(id);
+		return RespInfo.success();
+	}
+	
 	@RequestMapping("/list")
-	public RespInfo list() {
-		List<SysOrganDO> list=organDao.findAll();
-		return RespInfo.success(list);
+	public RespInfo list(@RequestParam(required=false)Long id) {
+		if(id==null || id==0) {
+			List<SysOrganDO> list=organDao.findAll();
+			return RespInfo.success(list);
+		}else {
+			List<SysOrganDO> list=organDao.findByPid(id);
+			return RespInfo.success(list);
+		}
 	}
 }
