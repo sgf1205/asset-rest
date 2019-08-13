@@ -13,4 +13,6 @@ public interface UserDao extends JpaRepository<UserDO, Long> {
 	
 	@EntityGraph(value = "user.all", type = EntityGraph.EntityGraphType.FETCH)
 	List<UserDO> findByDeleteFlag(int deleteFlag);
+
+	UserDO findByNameAndPwd(String username, String password);
 }

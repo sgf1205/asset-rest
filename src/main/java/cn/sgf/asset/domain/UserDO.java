@@ -30,7 +30,7 @@ public class UserDO {
     
     
     @Column(name="role_id")
-    private Integer roleId;
+    private Long roleId;
     
     @OneToOne
     @JoinColumn(name="organ_id",referencedColumnName = "id")

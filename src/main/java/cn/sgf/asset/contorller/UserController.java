@@ -1,14 +1,13 @@
 package cn.sgf.asset.contorller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +18,7 @@ import cn.sgf.asset.dao.UserDao;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.UserDTO;
+
 
 @RestController
 @RequestMapping("/api/user")

@@ -62,8 +62,18 @@ public class RespInfo {
 		return new RespInfo(RespCodeEnum.SUCCESS.code);
 	}
 	
+	public static RespInfo fail() {
+		return new RespInfo(RespCodeEnum.FAIL.code);
+	}
+	
 	public static RespInfo success(Object data) {
 		RespInfo respInfo=success();
+		respInfo.setData(data);
+		return respInfo;
+	}
+	
+	public static RespInfo fail(Object data) {
+		RespInfo respInfo=fail();
 		respInfo.setData(data);
 		return respInfo;
 	}
@@ -82,6 +92,8 @@ public class RespInfo {
 			return this.code;
 		}
 	}
+
+	
 	
 	
 }

@@ -1,19 +1,19 @@
 package cn.sgf.asset.core.enu;
 
 public enum RoleEnum {
-	SYS_ROLE(1,"系统管理员"),
-	NORMAL_ROLE(2,"普通管理员");
+	SYS_ROLE(1l,"系统管理员"),
+	NORMAL_ROLE(2l,"普通管理员");
 	
-	private int code;
+	private Long code;
 	
 	private String name;
 	
-	private RoleEnum(int code,String name) {
+	private RoleEnum(Long code,String name) {
 		this.code=code;
 		this.name=name;
 	}
 	
-	public int getCode() {
+	public Long getCode() {
 		return this.code;
 	}
 	
@@ -21,7 +21,7 @@ public enum RoleEnum {
 		return this.name;
 	}
 	
-	public static RoleEnum getByCode(int code) {
+	public static RoleEnum getByCode(Long code) {
 		for(RoleEnum enu:RoleEnum.values()) {
 			if(enu.getCode()==code)
 				return enu;
