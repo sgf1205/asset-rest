@@ -72,9 +72,9 @@ public class RespInfo {
 		return respInfo;
 	}
 	
-	public static RespInfo fail(Object data) {
+	public static RespInfo fail(String msg) {
 		RespInfo respInfo=fail();
-		respInfo.setData(data);
+		respInfo.setMsg(msg);
 		return respInfo;
 	}
 	

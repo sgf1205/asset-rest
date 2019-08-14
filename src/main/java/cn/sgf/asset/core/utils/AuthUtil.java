@@ -2,15 +2,34 @@ package cn.sgf.asset.core.utils;
 
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import cn.sgf.asset.core.auth.AdminUser;
 import cn.sgf.asset.dto.UserDTO;
 
+@Component
 public class AuthUtil {
+	
+	private static AdminUser admin;
+	
+	@Autowired
+	private AdminUser adminUser;
+	
+	@PostConstruct
+	public void init() {
+		AuthUtil.admin=adminUser;
+	}
+	
+	public static AdminUser getAdminUser() {
+		return admin;
+	}
 	
 	public static UserDTO getUserByToken(String token) {
 		

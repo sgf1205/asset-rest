@@ -7,13 +7,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ch.qos.logback.core.joran.action.ActionUtil;
 import cn.sgf.asset.core.RespInfo;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.RoleEnum;
+import cn.sgf.asset.core.utils.AuthUtil;
 import cn.sgf.asset.dao.UserDao;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
@@ -29,14 +34,23 @@ public class UserController {
 	@Autowired
 	private UserDao userDao;
 	
+	@Value("${user.defaultPwd}")
+	private String defaultPwd;
+	
+	
+	
 	@RequestMapping("/save")
 	public RespInfo save(UserDTO userDto) {
 		logger.info("userDto:{}",userDto);
+		if(userDto.getRoleId()==AuthUtil.getAdminUser().getRoleId()) {
+			return RespInfo.fail("不能修改超级管理员信息");
+		}
 		UserDO userDo=new UserDO();
 		BeanUtils.copyProperties(userDto, userDo);
 		if(userDto.getOrganId()!=0) {
 			SysOrganDO organ=new SysOrganDO();
 			organ.setId(userDto.getOrganId());
+			userDo.setPwd(defaultPwd);
 			userDo.setOrgan(organ);
 		}
 		userDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
@@ -47,8 +61,22 @@ public class UserController {
 	@RequestMapping("/restPwd")
 	public RespInfo restPwd(Long id) {
 		UserDO userDo=userDao.getOne(id);
-		userDo.setPwd("111111");
+		userDo.setPwd(defaultPwd);
 		userDao.save(userDo);
+		return RespInfo.success();
+	}
+	
+	@RequestMapping("/editSelfPwd")
+	public RespInfo editSelfPwd(@RequestHeader("token")String token,String oldPassword,String newPassword) {
+		UserDTO userDto=AuthUtil.getUserByToken(token);
+		if(userDto.getRoleId()==AuthUtil.getAdminUser().getRoleId())
+			return RespInfo.fail("超级管理员不能修改密码！");
+		if(!oldPassword.equals(userDto.getPwd()))
+			return RespInfo.fail("原密码错误！");
+		if(!newPassword.equals(userDto.getPwd())) {
+			userDto.setPwd(newPassword);
+			userDao.editPwd(newPassword,userDto.getId());
+		}
 		return RespInfo.success();
 	}
 	

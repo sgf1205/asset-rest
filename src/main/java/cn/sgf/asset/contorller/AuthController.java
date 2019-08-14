@@ -1,6 +1,6 @@
 package cn.sgf.asset.contorller;
 
-import java.util.List;import java.util.stream.Collector;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -35,14 +35,17 @@ public class AuthController {
 	@RequestMapping("/login")
 	public RespInfo login(String username,String password) {
 		logger.info("username:{},password:{}",username,password);
-		if("admin".equals(username)) {
+		if(AuthUtil.getAdminUser().getAccount().equals(username) &&
+				AuthUtil.getAdminUser().getPassword().equals(password)) {
 			UserDTO userDto=new UserDTO();
-			userDto.setRoleId(0l);
+			userDto.setRoleId(AuthUtil.getAdminUser().getRoleId());
 			userDto.setName(username);
+			userDto.setAccount(username);
+			userDto.setName(AuthUtil.getAdminUser().getName());
 			AuthUtil.save(userDto);
 			return RespInfo.success(userDto);
 		}else {
-			UserDO user=userDao.findByNameAndPwd(username,password);
+			UserDO user=userDao.findByAccountAndPwd(username,password);
 			if(user==null) {
 				return RespInfo.fail("用户名密码错误");
 			}
@@ -51,6 +54,8 @@ public class AuthController {
 			List<RoleConfigDO> roleConfigDo=roleConfigDao.findByRoleId(userDto.getRoleId());
 			List<String> menus=roleConfigDo.stream().map(rc-> rc.getMenu()).collect(Collectors.toList());
 			userDto.setMenus(menus);
+			userDto.setOrganId(user.getOrgan().getId());
+			userDto.setOrganName(user.getOrgan().getName());
 			AuthUtil.save(userDto);
 			return RespInfo.success(userDto);
 		}
@@ -60,6 +65,12 @@ public class AuthController {
 	public RespInfo logout(@RequestHeader(name="token")String token) {
 		AuthUtil.remove(token);
 		return RespInfo.success();
+	}
+	
+	@RequestMapping("/getCurrentUser")
+	public RespInfo getCurrentUser(@RequestHeader(name="token")String token) {
+		UserDTO user=AuthUtil.getUserByToken(token);
+		return RespInfo.success(user);
 	}
 	
 	@RequestMapping("/menus")
