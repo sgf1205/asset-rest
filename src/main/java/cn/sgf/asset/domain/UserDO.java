@@ -37,6 +37,6 @@ public class UserDO {
     private SysOrganDO organ;
     
     @Column(name="delete_flag")
-    private int deleteFlag;
+    private Integer deleteFlag;
     
 }
