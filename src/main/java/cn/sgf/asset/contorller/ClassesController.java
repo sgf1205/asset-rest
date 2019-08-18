@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.qos.logback.core.joran.action.ActionUtil;
-import cn.sgf.asset.core.RespInfo;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.RoleEnum;
+import cn.sgf.asset.core.model.RespInfo;
 import cn.sgf.asset.core.utils.AuthUtil;
 import cn.sgf.asset.dao.ClassesDao;
 import cn.sgf.asset.dao.UserDao;

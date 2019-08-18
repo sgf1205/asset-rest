@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.sgf.asset.core.RespInfo;
+import cn.sgf.asset.core.model.RespInfo;
 import cn.sgf.asset.dao.RoleConfigDao;
 import cn.sgf.asset.domain.RoleConfigDO;
 import cn.sgf.asset.dto.RoleConfigDTO;

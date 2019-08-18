@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.sgf.asset.core.RespInfo;
-import cn.sgf.asset.core.RespInfo.RespCodeEnum;
+import cn.sgf.asset.core.model.RespInfo;
+import cn.sgf.asset.core.model.RespInfo.RespCodeEnum;
 import cn.sgf.asset.dao.AssetDao;
 import cn.sgf.asset.dao.OrganDao;
 import cn.sgf.asset.domain.AssetDO;

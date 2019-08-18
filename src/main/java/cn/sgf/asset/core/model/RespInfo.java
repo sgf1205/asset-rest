@@ -1,4 +1,4 @@
-package cn.sgf.asset.core;
+package cn.sgf.asset.core.model;
 
 
 public class RespInfo {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.sgf.asset.core.RespInfo;
+import cn.sgf.asset.core.model.RespInfo;
 import cn.sgf.asset.core.utils.AuthUtil;
 import cn.sgf.asset.dao.RoleConfigDao;
 import cn.sgf.asset.dao.UserDao;
