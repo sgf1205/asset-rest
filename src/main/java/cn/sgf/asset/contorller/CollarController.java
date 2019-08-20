@@ -30,65 +30,62 @@ import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.core.model.RespInfo;
 import cn.sgf.asset.core.utils.AuthUtil;
 import cn.sgf.asset.dao.AssetDao;
+import cn.sgf.asset.dao.CollarDao;
 import cn.sgf.asset.domain.AssetDO;
 import cn.sgf.asset.domain.ClassesDO;
+import cn.sgf.asset.domain.CollarDO;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.AssetDTO;
+import cn.sgf.asset.dto.CollarDTO;
 import cn.sgf.asset.dto.UserDTO;
 
 @RestController
-@RequestMapping("/api/asset")
-public class AssetController {
+@RequestMapping("/api/asset/collar")
+public class CollarController {
 
-	private Logger logger = LoggerFactory.getLogger(AssetController.class);
+	private Logger logger = LoggerFactory.getLogger(CollarController.class);
 	@Autowired
 	private AssetDao assetDao;
+	
+	
+	@Autowired
+	private CollarDao collarDao;
 
 	@RequestMapping("/save")
-	public RespInfo save(@RequestHeader("token") String token, AssetDTO assetDto) {
-		logger.info("asset:{}", assetDto);
-		AssetDO assetDo = new AssetDO();
-		BeanUtils.copyProperties(assetDto, assetDo);
-		assetDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
-		ClassesDO classesDo = new ClassesDO();
-		classesDo.setId(assetDto.getClassesId());
-		assetDo.setClasses(classesDo);
+	public RespInfo save(@RequestHeader("token") String token, CollarDTO  collar,Long[] assetIds) {
+		logger.info("collar:{}", collar);
+		CollarDO collarDo = new CollarDO();
 		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
 		UserDO userDo = new UserDO();
 		userDo.setId(currentUserDto.getId());
+		collarDo.setCreateUesr(userDo);
 		SysOrganDO organ=new SysOrganDO();
-		organ.setId(assetDto.getOrganId());
-		assetDo.setRegisterOrgan(organ);
-		if (assetDo.getId() == null) {
-			assetDo.setRegisterUser(userDo);
-			assetDo.setRegisterTime(new Date());
-			assetDo.setStatus(StatusEnum.FREE.getCode());
-			assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", ""));
+		organ.setId(collar.getCollarOrganId());
+		collarDo.setCollarOrgan(organ);
+		collarDo.setCollarTime(collar.getCollarTime());
+		collarDo.setRetreatTime(collar.getRetreatTime());
+		collarDo.setRemarks(collar.getRemarks());
+		collarDo.setCreateTime(new Date());
+		List<AssetDO> assets=new ArrayList<AssetDO>();
+		for(Long assetId:assetIds) {
+			AssetDO asset=new AssetDO();
+			asset.setId(assetId);
+			assets.add(asset);
+			assetDao.editStatus(StatusEnum.USED.getCode(), assetId);
 		}
-		assetDao.save(assetDo);
+		collarDo.setAssets(assets);
+		collarDao.save(collarDo);
 		return RespInfo.success();
 	}
 
-	@RequestMapping("/delete")
-	public RespInfo del(Long[] ids) {
-		for (Long id : ids) {
-			AssetDO assetDo = assetDao.getOne(id);
-			assetDo.setDeleteFlag(DeleteEnum.DELETED.getCode());
-			assetDao.save(assetDo);
-		}
-		return RespInfo.success();
-	}
 
 	@RequestMapping("/list")
-	public RespInfo list(@RequestParam(required = false) String name,@RequestParam(required = false) Integer status, PageParam pageParam) {
+	public RespInfo list(@RequestParam(required = false) String name, PageParam pageParam) {
 		Pageable pageable = PageRequest.of(pageParam.getCurrentPage() - 1, pageParam.getPageSize());
 		AssetDO searchDo = new AssetDO();
 		if (StringUtils.isNotEmpty(name)) {
 			searchDo.setName(name);
-		}
-		if(status!=null) {
-			searchDo.setStatus(status);
 		}
 		searchDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
 		ExampleMatcher exampleMatcher = ExampleMatcher.matching().withMatcher("name",

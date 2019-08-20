@@ -38,6 +38,9 @@ public class AssetDTO {
     
     private Date registerTime;//登记时间
     
+    private Long organId;//登记部门
+    private String organName;
+    
     private String registerUserName;
     
     private UserDO registerUser;//登记人
