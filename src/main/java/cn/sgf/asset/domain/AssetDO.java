@@ -53,4 +53,8 @@ public class AssetDO {
     @OneToOne
     @JoinColumn(name="register_user_id",referencedColumnName = "id")
     private UserDO registerUser;//登记人
+    
+    @OneToOne
+    @JoinColumn(name="register_organ_id",referencedColumnName = "id")
+    private SysOrganDO registerOrgan;//登记部门
 }

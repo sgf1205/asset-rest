@@ -9,7 +9,6 @@ spring:
         username: root
         password: root
 #h2数据库配置能远程访问
-spring:
     h2:
         console:
             path: /h2-console
@@ -17,7 +16,6 @@ spring:
             settings:
                 web-allow-others: true
 # JPA 相关配置
-spring:
     jpa:
         database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         show-sql: true
