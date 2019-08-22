@@ -13,31 +13,35 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import cn.sgf.asset.domain.ApplyItemDO;
 import cn.sgf.asset.domain.AssetDO;
 import lombok.Data;
 
 /**
- * 资产领用单
+ * 资产使用申请单
  * 
  * @author user
  *
  */
 @Data
-public class CollarDTO {
+public class ApplyDTO {
 	
 	private Long id;
-
-	private Long collarOrganId;
 	
-	private String collarOrganName;
+	private Integer type;
 
-	private Date collarTime; // 领用时间
+	private Long organId;
+	
+	private String organName;
 
+	private String applyUser;
+	
 	private Date retreatTime;// 归还时间
 
 	private Date createTime;// 创建时间
 	
 	private String remarks;//备注
 	
-	private List<AssetDO> assets;
+	private Long[] assetIds; //关联的资产ID
+	
 }

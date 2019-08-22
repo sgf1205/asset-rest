@@ -1,18 +1,15 @@
 package cn.sgf.asset.core.enu;
 
-public enum StatusEnum {
-	FREE(0,"空闲"), 
-	USED_BORROW(2,"借用"),
-	USED_RECEIVE(3,"领用"),
-	MAINTAIN(4,"维修"),
-	SCRAPPED(5,"报废")
-	;
+public enum ApplyTypeEnum {
+	RECEIVE(1,"领取"), 
+	BORROW(2,"借用"),
+	RETURN(3,"归还");
 	
 	private int code;
 	
 	private String desc;
 	
-	private StatusEnum(int code,String desc) {
+	private ApplyTypeEnum(int code,String desc) {
 		this.code=code;
 		this.desc=desc;
 	}

@@ -19,25 +19,27 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * 资产领用单
+ * 资产使用申请单
  * 
  * @author user
  *
  */
 @Data
 @Entity
-@Table(name = "T_ASSET_COLLAR")
-public class CollarDO {
+@Table(name = "T_ASSET_APPLY")
+public class ApplyDO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	private Integer type;//申请单类型(1：领用, 2：借用，3:归还)
 
 	@OneToOne
-	@JoinColumn(name = "collar_organ_id", referencedColumnName = "id")
-	private SysOrganDO CollarOrgan;// 领用部门
+	@JoinColumn(name = "organ_id", referencedColumnName = "id")
+	private SysOrganDO organ;// 提出部门
 
-	@Column(name = "collar_time")
-	private Date collarTime; // 领用时间
+	@Column(name="apply_user")
+	private String applyUser;//申请人
 
 	@Column(name = "retreat_time")
 	private Date retreatTime;// 归还时间
@@ -51,7 +53,6 @@ public class CollarDO {
 	@JoinColumn(name = "create_user_id", referencedColumnName = "id")
 	private UserDO createUesr;
 
-	@ManyToMany(cascade = CascadeType.MERGE)
-	@JoinTable(name = "T_ASSET_COLLAR_MAP",joinColumns = @JoinColumn(name = "collar_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "asset_id", referencedColumnName = "id"))
-	private List<AssetDO> assets;
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "apply")
+	private List<ApplyItemDO> items;
 }

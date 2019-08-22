@@ -16,7 +16,6 @@ public interface AssetDao extends JpaRepository<AssetDO, Long> {
 
 	List<AssetDO> findByDeleteFlag(int code);
 	
-	@Transactional
 	@Modifying
 	@Query("update AssetDO u set u.status = :status where u.id = :id")
 	void editStatus(Integer status, Long id);
