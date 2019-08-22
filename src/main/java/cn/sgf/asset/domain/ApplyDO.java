@@ -32,7 +32,9 @@ public class ApplyDO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private Integer type;//申请单类型(1：领用, 2：借用，3:归还)
+	private Integer type;//申请单类型(1：领用, 2：借用)
+	
+	private Integer status;//借用单状态，参考StatusEnum
 
 	@OneToOne
 	@JoinColumn(name = "organ_id", referencedColumnName = "id")
@@ -41,8 +43,11 @@ public class ApplyDO {
 	@Column(name="apply_user")
 	private String applyUser;//申请人
 
-	@Column(name = "retreat_time")
-	private Date retreatTime;// 归还时间
+	@Column(name = "expect_retreat_time")
+	private Date expectRetreatTime;// 预计归还时间
+	
+	@Column(name = "real_retreat_time")
+	private Date realRetreatTime;// 实际归还时间
 
 	@Column(name = "create_time")
 	private Date createTime;// 创建时间

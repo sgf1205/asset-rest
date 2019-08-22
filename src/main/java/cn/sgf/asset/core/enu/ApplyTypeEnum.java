@@ -2,8 +2,7 @@ package cn.sgf.asset.core.enu;
 
 public enum ApplyTypeEnum {
 	RECEIVE(1,"领取"), 
-	BORROW(2,"借用"),
-	RETURN(3,"归还");
+	BORROW(2,"借用");
 	
 	private int code;
 	

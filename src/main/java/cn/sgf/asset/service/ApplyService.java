@@ -17,5 +17,7 @@ public interface ApplyService {
 
 	void createApply(ApplyDTO applyDto,UserDTO currentUser);
 
-	PageResult<ApplyDO> list(Date startCreateDate,Date endCreateDate,Pageable pageable);
+	PageResult<ApplyDO> list(Integer type,Date startCreateDate,Date endCreateDate,Pageable pageable);
+
+	void borrowReturn(Long[] ids, UserDTO currentUser);
 }

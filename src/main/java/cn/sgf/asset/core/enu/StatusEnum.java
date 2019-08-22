@@ -5,7 +5,8 @@ public enum StatusEnum {
 	USED_BORROW(2,"借用"),
 	USED_RECEIVE(3,"领用"),
 	MAINTAIN(4,"维修"),
-	SCRAPPED(5,"报废")
+	SCRAPPED(5,"报废"),
+	USED_BORROW_RETURN(6,"借用归还"),
 	;
 	
 	private int code;

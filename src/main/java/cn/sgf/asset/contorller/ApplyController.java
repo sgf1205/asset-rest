@@ -51,9 +51,17 @@ public class ApplyController {
 
 
 	@RequestMapping("/list")
-	public RespInfo list(@RequestParam(required = false) Date startCreateDate,@RequestParam(required = false) Date endCreateDate, PageParam pageParam) {
+	public RespInfo list(Integer type,@RequestParam(required = false) Date startCreateDate,@RequestParam(required = false) Date endCreateDate, PageParam pageParam) {
 		Pageable pageable = PageRequest.of(pageParam.getCurrentPage() - 1, pageParam.getPageSize());
-		PageResult<ApplyDO> pageResult=applyService.list(startCreateDate,endCreateDate,pageable);
+		PageResult<ApplyDO> pageResult=applyService.list(type,startCreateDate,endCreateDate,pageable);
 		return RespInfo.success(pageResult);
 	}
+	
+	@RequestMapping("/return")
+	public RespInfo borrowReturn(@RequestHeader("token") String token, Long[] ids) {
+		UserDTO currentUser=AuthUtil.getUserByToken(token);
+		applyService.borrowReturn(ids, currentUser);
+		return RespInfo.success();
+	}
+	
 }

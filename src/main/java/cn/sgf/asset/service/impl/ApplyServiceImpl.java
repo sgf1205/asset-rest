@@ -77,12 +77,12 @@ public class ApplyServiceImpl implements ApplyService{
 
 
 	@Override
-	public PageResult<ApplyDO> list(Date startCreateDate,Date endCreateDate, Pageable pageable) {
-		ApplyDO searchDo = new ApplyDO();
+	public PageResult<ApplyDO> list(Integer type,Date startCreateDate,Date endCreateDate, Pageable pageable) {
 		  Specification<ApplyDO> querySpecifi = new Specification<ApplyDO>() {
 	            @Override
 	            public Predicate toPredicate(Root<ApplyDO> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
 	                List<Predicate> predicates = new ArrayList<>();
+	                predicates.add(cb.equal(root.get("type").as(Integer.class), type));
 	                if (startCreateDate!=null) {
 	                    //大于或等于传入时间
 	                    predicates.add(cb.greaterThanOrEqualTo(root.get("createTime").as(Date.class), startCreateDate));
@@ -103,6 +103,23 @@ public class ApplyServiceImpl implements ApplyService{
 		pageResult.setTotalSize(pageList.getTotalElements());
 		pageResult.setCurrentPage(pageList.getNumber());
 		return pageResult;
+	}
+	
+	@Override
+	public void borrowReturn(Long[] ids, UserDTO currentUser) {
+		// TODO Auto-generated method stub
+		Date now=new Date();
+		for(Long id:ids) {
+			ApplyDO applyDo=applyDao.getOne(id);
+			applyDo.setStatus(StatusEnum.USED_BORROW_RETURN.getCode());
+			applyDo.setRealRetreatTime(now);
+			applyDo.getItems().forEach(item->{
+				item.setStatus(StatusEnum.USED_BORROW_RETURN.getCode());
+				item.setRetreatTime(now);
+				item.getAsset().setStatus(StatusEnum.FREE.getCode());
+			});
+			applyDao.save(applyDo);
+		}
 	}
 
 

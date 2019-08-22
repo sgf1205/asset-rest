@@ -40,6 +40,10 @@ public class ApplyDTO {
 
 	private Date createTime;// 创建时间
 	
+	private Date expectRetreatTime;//预计归还时间
+	
+	private Integer status;//借用单状态
+	
 	private String remarks;//备注
 	
 	private Long[] assetIds; //关联的资产ID
