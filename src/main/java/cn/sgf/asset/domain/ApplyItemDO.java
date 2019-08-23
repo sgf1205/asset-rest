@@ -45,6 +45,11 @@ public class ApplyItemDO {
 	@ManyToOne
 	@JoinColumn(name = "scrap_id", referencedColumnName = "id")
 	private ScrapDO scrap;// 报废单
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "repair_id", referencedColumnName = "id")
+	private RepairDO repair;// 报修单
 
 	@ManyToOne
 	@JoinColumn(name = "asset_id", referencedColumnName = "id")

@@ -7,7 +7,8 @@ public enum StatusEnum {
 	MAINTAIN(4,"维修"),
 	SCRAPPED(5,"报废"),
 	USED_BORROW_RETURN(6,"借用归还"),
-	SCRAPPED_RECOVERY(7,"恢复")
+	SCRAPPED_RECOVERY(7,"恢复"),
+	MAINTAIN_FINISH(8,"维修完成")
 	;
 	
 	private int code;
