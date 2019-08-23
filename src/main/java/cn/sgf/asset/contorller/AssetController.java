@@ -35,7 +35,9 @@ import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.AssetDTO;
+import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.UserDTO;
+import cn.sgf.asset.service.AssetService;
 
 @RestController
 @RequestMapping("/api/asset")
@@ -43,76 +45,24 @@ public class AssetController {
 
 	private Logger logger = LoggerFactory.getLogger(AssetController.class);
 	@Autowired
-	private AssetDao assetDao;
+	private AssetService assetService;
 
 	@RequestMapping("/save")
 	public RespInfo save(@RequestHeader("token") String token, AssetDTO assetDto) {
 		logger.info("asset:{}", assetDto);
-		AssetDO assetDo = new AssetDO();
-		BeanUtils.copyProperties(assetDto, assetDo);
-		ClassesDO classesDo = new ClassesDO();
-		classesDo.setId(assetDto.getClassesId());
-		assetDo.setClasses(classesDo);
 		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
-		UserDO userDo = new UserDO();
-		userDo.setId(currentUserDto.getId());
-		SysOrganDO organ=new SysOrganDO();
-		organ.setId(assetDto.getOrganId());
-		assetDo.setRegisterOrgan(organ);
-		if (assetDo.getId() == null) {//新增
-			assetDo.setRegisterUser(userDo);
-			assetDo.setRegisterTime(new Date());
-			assetDo.setStatus(StatusEnum.FREE.getCode());
-			assetDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
-			assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", ""));
-		}else {//修改
-			assetDo.setEditUser(userDo);
-			assetDo.setEditTime(new Date());
-		}
-		assetDao.save(assetDo);
+		assetService.save(assetDto,currentUserDto);
 		return RespInfo.success();
 	}
 
 	@RequestMapping("/delete")
 	public RespInfo del(Long[] ids) {
-		for (Long id : ids) {
-			AssetDO assetDo = assetDao.getOne(id);
-			assetDo.setDeleteFlag(DeleteEnum.DELETED.getCode());
-			assetDao.save(assetDo);
-		}
+		assetService.delete(ids);
 		return RespInfo.success();
 	}
 
 	@RequestMapping("/list")
-	public RespInfo list(@RequestParam(required = false) String name,@RequestParam(required = false) Integer status, PageParam pageParam) {
-		Pageable pageable = PageRequest.of(pageParam.getCurrentPage() - 1, pageParam.getPageSize());
-		AssetDO searchDo = new AssetDO();
-		if (StringUtils.isNotEmpty(name)) {
-			searchDo.setName(name);
-		}
-		if(status!=null) {
-			searchDo.setStatus(status);
-		}
-		searchDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
-		ExampleMatcher exampleMatcher = ExampleMatcher.matching().withMatcher("name",
-				GenericPropertyMatchers.contains());
-		Example<AssetDO> searchExample = Example.of(searchDo, exampleMatcher);
-		Page<AssetDO> pageList = assetDao.findAll(searchExample, pageable);
-		List<AssetDTO> dtoList = pageList.getContent().stream().map(assetDo -> {
-			AssetDTO dto = new AssetDTO();
-			BeanUtils.copyProperties(assetDo, dto);
-			dto.setClassesName(assetDo.getClasses().getName());
-			dto.setClassesId(assetDo.getClasses().getId());
-			dto.setRegisterUserName(assetDo.getRegisterUser().getName());
-			dto.setOrganId(assetDo.getRegisterOrgan().getId());
-			dto.setOrganName(assetDo.getRegisterOrgan().getName());
-			return dto;
-		}).collect(Collectors.toList());
-		PageResult<AssetDTO> pageResult=new PageResult<AssetDTO>();
-		pageResult.setResult(dtoList);
-		pageResult.setTotalPage(pageList.getTotalPages());
-		pageResult.setTotalSize(pageList.getTotalElements());
-		pageResult.setCurrentPage(pageList.getNumber());
-		return RespInfo.success(pageResult);
+	public RespInfo list(AssetSearchDTO searchDto) {
+		return RespInfo.success(assetService.list(searchDto));
 	}
 }

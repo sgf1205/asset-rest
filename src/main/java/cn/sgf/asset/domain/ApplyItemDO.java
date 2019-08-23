@@ -54,13 +54,13 @@ public class ApplyItemDO {
 	@ManyToOne
 	@JoinColumn(name = "asset_id", referencedColumnName = "id")
 	private AssetDO asset; // 领用资产
-
+	
 	@Column(name = "retreat_time")
 	private Date retreatTime;// 归还时间
 
 	@Column(name = "create_time")
 	private Date createTime;// 创建时间
 	
-	private Integer status; //资产领用状态（0：领用，1：归还）
+	private Integer status; //资产状态
 	
 }

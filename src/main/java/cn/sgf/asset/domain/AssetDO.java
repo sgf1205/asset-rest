@@ -70,6 +70,10 @@ public class AssetDO {
     private SysOrganDO registerOrgan;//登记部门
     
     @OneToOne
+    @JoinColumn(name="using_organ_id",referencedColumnName = "id")
+    private SysOrganDO usingOrgan;//当前使用部门
+    
+    @OneToOne
     @JoinColumn(name="edit_user_id",referencedColumnName = "id",insertable=false)
     private UserDO editUser;//修改人
     
