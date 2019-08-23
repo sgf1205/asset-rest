@@ -50,7 +50,6 @@ public class AssetController {
 		logger.info("asset:{}", assetDto);
 		AssetDO assetDo = new AssetDO();
 		BeanUtils.copyProperties(assetDto, assetDo);
-		assetDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
 		ClassesDO classesDo = new ClassesDO();
 		classesDo.setId(assetDto.getClassesId());
 		assetDo.setClasses(classesDo);
@@ -60,11 +59,15 @@ public class AssetController {
 		SysOrganDO organ=new SysOrganDO();
 		organ.setId(assetDto.getOrganId());
 		assetDo.setRegisterOrgan(organ);
-		if (assetDo.getId() == null) {
+		if (assetDo.getId() == null) {//新增
 			assetDo.setRegisterUser(userDo);
 			assetDo.setRegisterTime(new Date());
 			assetDo.setStatus(StatusEnum.FREE.getCode());
+			assetDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
 			assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", ""));
+		}else {//修改
+			assetDo.setEditUser(userDo);
+			assetDo.setEditTime(new Date());
 		}
 		assetDao.save(assetDo);
 		return RespInfo.success();

@@ -6,56 +6,57 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 /**
- * 资产申请单关联的具体资源
+ * 资产报废单
  * 
  * @author user
  *
  */
 @Data
 @Entity
-@Table(name = "T_ASSET_APPLY_ITEM")
-public class ApplyItemDO {
+@Table(name = "T_ASSET_SCRAP")
+public class ScrapDO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "apply_id", referencedColumnName = "id")
-	private ApplyDO apply;// 领用单
 	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "scrap_id", referencedColumnName = "id")
-	private ScrapDO scrap;// 报废单
+	private Integer status;//借用单状态，参考StatusEnum
 
-	@ManyToOne
-	@JoinColumn(name = "asset_id", referencedColumnName = "id")
-	private AssetDO asset; // 领用资产
 
-	@Column(name = "retreat_time")
-	private Date retreatTime;// 归还时间
+	@Column(name="scrap_user")
+	private String scrapUser;//申请人
+
 
 	@Column(name = "create_time")
 	private Date createTime;// 创建时间
 	
-	private Integer status; //资产领用状态（0：领用，1：归还）
 	
+	@Column(name = "recovery_time")
+	private Date recoveryTime;// 恢复时间
+	
+	private String remarks;
+	
+	@OneToOne
+	@JoinColumn(name = "create_user_id", referencedColumnName = "id",updatable=false)
+	private UserDO createUesr;
+	
+	@OneToOne
+	@JoinColumn(name = "recovery_user_id", referencedColumnName = "id",insertable=false)
+	private UserDO recoveryUesr;
+	
+
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "scrap")
+	private List<ApplyItemDO> items;
 }

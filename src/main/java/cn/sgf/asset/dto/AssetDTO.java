@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.UserDO;
 import lombok.Data;
@@ -22,6 +24,7 @@ public class AssetDTO {
     private String sn;
     private String metering;
     private Double money;
+    @DateTimeFormat(pattern="yyyy-MM-dd")  
     private Date purchaseTime;//购买时间
  
     private Integer status;
@@ -44,4 +47,5 @@ public class AssetDTO {
     private String registerUserName;
     
     private UserDO registerUser;//登记人
+    
 }

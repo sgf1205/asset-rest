@@ -11,6 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
@@ -30,6 +35,8 @@ public class AssetDO {
     private String sn;
     private String metering;//计量单位
     private Double money;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @Column(name = "purchase_time")
     private Date purchaseTime;//购买时间
  
@@ -43,18 +50,29 @@ public class AssetDO {
     private String supplier;
     private String contacts;
     private String tell;
+    
+    @DateTimeFormat(pattern="yyyy-MM-dd") 
     @Column(name = "expiry_time")
     private Date expiryTime; //维保到期时间
     private String explain;
     
-    @Column(name = "register_time")
+    
+    
+    @Column(name = "register_time",updatable=false)
     private Date registerTime;//登记时间
     
     @OneToOne
-    @JoinColumn(name="register_user_id",referencedColumnName = "id")
+    @JoinColumn(name="register_user_id",referencedColumnName = "id",updatable=false)
     private UserDO registerUser;//登记人
     
     @OneToOne
     @JoinColumn(name="register_organ_id",referencedColumnName = "id")
     private SysOrganDO registerOrgan;//登记部门
+    
+    @OneToOne
+    @JoinColumn(name="edit_user_id",referencedColumnName = "id",insertable=false)
+    private UserDO editUser;//修改人
+    
+    @Column(name = "edit_time",insertable=false)
+    private Date editTime;//修改时间
 }
