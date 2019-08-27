@@ -1,0 +1,33 @@
+#配置数据库连接地址
+spring:
+    datasource:
+        url: jdbc:h2:file:./h2/code-generator;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE
+        driver-class-name: org.h2.Driver
+        username: root
+        password: root
+#h2数据库配置能远程访问
+    h2:
+        console:
+            path: /h2-console
+            enabled: true
+            settings:
+                web-allow-others: true
+# JPA 相关配置
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        show-sql: true
+        hibernate:
+            ddl-auto: create
+#默认密码
+#默认管理员账号密码、角色ID
+user:
+    default-users[0]: 
+        name: 超级用户
+        account: super
+    default-users[1]:
+        name: 普通用户1
+        account: user1
+    default-users[2]:
+        name: 普通用户2
+        account: user2
+        

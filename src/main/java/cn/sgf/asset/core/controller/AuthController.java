@@ -54,8 +54,10 @@ public class AuthController {
 			List<RoleConfigDO> roleConfigDo=roleConfigDao.findByRoleId(userDto.getRoleId());
 			List<String> menus=roleConfigDo.stream().map(rc-> rc.getMenu()).collect(Collectors.toList());
 			userDto.setMenus(menus);
-			userDto.setOrganId(user.getOrgan().getId());
-			userDto.setOrganName(user.getOrgan().getName());
+			if(user.getOrgan()!=null) {
+				userDto.setOrganId(user.getOrgan().getId());
+				userDto.setOrganName(user.getOrgan().getName());
+			}
 			AuthUtil.save(userDto);
 			return RespInfo.success(userDto);
 		}

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.qos.logback.core.joran.action.ActionUtil;
+import cn.sgf.asset.core.config.UserConfig;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.RoleEnum;
 import cn.sgf.asset.core.model.RespInfo;
@@ -34,8 +35,8 @@ public class UserController {
 	@Autowired
 	private UserDao userDao;
 	
-	@Value("${user.defaultPwd}")
-	private String defaultPwd;
+	@Autowired
+	private UserConfig userConfig;
 	
 	
 	
@@ -47,12 +48,12 @@ public class UserController {
 		}
 		UserDO userDo=new UserDO();
 		BeanUtils.copyProperties(userDto, userDo);
-		if(userDto.getOrganId()!=0) {
+		if(userDto.getOrganId()!=null) {
 			SysOrganDO organ=new SysOrganDO();
 			organ.setId(userDto.getOrganId());
-			userDo.setPwd(defaultPwd);
 			userDo.setOrgan(organ);
 		}
+		userDo.setPwd(userConfig.getDefaultPwd());
 		userDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
 		userDao.save(userDo);
 		return RespInfo.success();
@@ -61,7 +62,7 @@ public class UserController {
 	@RequestMapping("/restPwd")
 	public RespInfo restPwd(Long id) {
 		UserDO userDo=userDao.getOne(id);
-		userDo.setPwd(defaultPwd);
+		userDo.setPwd(userConfig.getDefaultPwd());
 		userDao.save(userDo);
 		return RespInfo.success();
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.sgf.asset.core.auth.AdminUser;
+import cn.sgf.asset.core.config.UserConfig;
 import cn.sgf.asset.dto.UserDTO;
 
 @Component
@@ -20,11 +21,11 @@ public class AuthUtil {
 	private static AdminUser admin;
 	
 	@Autowired
-	private AdminUser adminUser;
+	private UserConfig userConfig;
 	
 	@PostConstruct
 	public void init() {
-		AuthUtil.admin=adminUser;
+		AuthUtil.admin=userConfig.getAdmin();
 	}
 	
 	public static AdminUser getAdminUser() {

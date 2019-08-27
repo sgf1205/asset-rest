@@ -6,11 +6,12 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan
 @SpringBootApplication
-public class App 
-{
-    public static void main( String[] args )
-    {
-    	SpringApplication.run(App.class, args);
+public class App {
+	
+    public static void main(String[] args ){
+    	SpringApplication springApplication = new SpringApplication(App.class);
+    	springApplication.addListeners(new AppStartup());
+    	springApplication.run(args);
     }
     
 }
