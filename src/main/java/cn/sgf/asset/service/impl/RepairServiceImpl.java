@@ -116,6 +116,7 @@ public class RepairServiceImpl implements RepairService{
 			repairDo.getItems().forEach(item->{
 				item.setStatus(StatusEnum.SCRAPPED_RECOVERY.getCode());
 				item.setRetreatTime(now);
+				item.getAsset().setUsingOrgan(item.getAsset().getRegisterOrgan());
 				item.getAsset().setStatus(StatusEnum.FREE.getCode());
 			});
 			UserDO userDo = new UserDO();

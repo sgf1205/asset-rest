@@ -65,4 +65,10 @@ public class AssetController {
 	public RespInfo list(AssetSearchDTO searchDto) {
 		return RespInfo.success(assetService.list(searchDto));
 	}
+	
+	@RequestMapping("/statistics")
+	public RespInfo statistics(String type) {
+		return RespInfo.success(assetService.statistics(type));
+	}
+	
 }

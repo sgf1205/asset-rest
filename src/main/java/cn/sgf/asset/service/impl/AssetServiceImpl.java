@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -34,6 +35,7 @@ import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.AssetDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
+import cn.sgf.asset.dto.AssetStatisticsDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.service.AssetService;
 
@@ -59,6 +61,7 @@ public class AssetServiceImpl implements AssetService {
 		organ.setId(assetDto.getOrganId());
 		assetDo.setRegisterOrgan(organ);
 		if (assetDo.getId() == null) {//新增
+			assetDo.setUsingOrgan(organ);
 			assetDo.setRegisterUser(userDo);
 			assetDo.setRegisterTime(new Date());
 			assetDo.setStatus(StatusEnum.FREE.getCode());
@@ -81,7 +84,7 @@ public class AssetServiceImpl implements AssetService {
 			public Predicate toPredicate(Root<AssetDO> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
 				List<Predicate> predicates = new ArrayList<>();
 				if (StringUtils.isNotEmpty(searchDto.getName())) {
-					predicates.add(cb.like(root.get("name").as(String.class), searchDto.getName()));
+					predicates.add(cb.like(root.get("name").as(String.class), "%"+searchDto.getName()+"%"));
 				}
 				if (searchDto.getStatus() != null) {
 					predicates.add(cb.equal(root.get("status").as(Integer.class), searchDto.getStatus()));
@@ -94,7 +97,7 @@ public class AssetServiceImpl implements AssetService {
 				if (searchDto.getUsingOrganId() != null) {
 					SysOrganDO usingOrgan = new SysOrganDO();
 					usingOrgan.setId(searchDto.getUsingOrganId());
-					predicates.add(cb.equal(root.get("usingOrganId").as(SysOrganDO.class), usingOrgan));
+					predicates.add(cb.equal(root.get("usingOrgan").as(SysOrganDO.class), usingOrgan));
 				}
 				if (searchDto.getLowMoney() != null) {
 					predicates.add(cb.ge(root.get("money").as(Double.class), searchDto.getLowMoney()));
@@ -116,6 +119,11 @@ public class AssetServiceImpl implements AssetService {
 			dto.setRegisterUserName(assetDo.getRegisterUser().getName());
 			dto.setOrganId(assetDo.getRegisterOrgan().getId());
 			dto.setOrganName(assetDo.getRegisterOrgan().getName());
+			if(assetDo.getUsingOrgan()!=null) {
+				dto.setUsingOrganId(assetDo.getUsingOrgan().getId());
+				dto.setUsingOrganName(assetDo.getUsingOrgan().getName());
+			}
+			
 			return dto;
 		}).collect(Collectors.toList());
 		PageResult<AssetDTO> pageResult = new PageResult<AssetDTO>();
@@ -123,7 +131,7 @@ public class AssetServiceImpl implements AssetService {
 		pageResult.setTotalPage(pageList.getTotalPages());
 		pageResult.setTotalSize(pageList.getTotalElements());
 		pageResult.setCurrentPage(pageList.getNumber());
-		return null;
+		return pageResult;
 	}
 	
 	@Override
@@ -135,6 +143,18 @@ public class AssetServiceImpl implements AssetService {
 			assetDo.setDeleteFlag(DeleteEnum.DELETED.getCode());
 			assetDao.save(assetDo);
 		}
+	}
+	
+	@Override
+	public List<AssetStatisticsDTO> statistics(String type) {
+		// TODO Auto-generated method stub
+		
+		if(type.equals("classes")) {
+			return assetDao.statisticsByClasses();
+		}else if(type.equals("organ")) {
+			return assetDao.statisticsByClasses();
+		}
+		return null;
 	}
 
 }

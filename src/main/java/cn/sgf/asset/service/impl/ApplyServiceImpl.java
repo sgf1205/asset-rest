@@ -116,6 +116,7 @@ public class ApplyServiceImpl implements ApplyService{
 			applyDo.getItems().forEach(item->{
 				item.setStatus(StatusEnum.USED_BORROW_RETURN.getCode());
 				item.setRetreatTime(now);
+				item.getAsset().setUsingOrgan(item.getAsset().getRegisterOrgan());
 				item.getAsset().setStatus(StatusEnum.FREE.getCode());
 				item.getAsset().setUsingOrgan(null);
 			});

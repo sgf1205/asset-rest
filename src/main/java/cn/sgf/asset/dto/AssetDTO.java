@@ -44,6 +44,10 @@ public class AssetDTO {
     private Long organId;//登记部门
     private String organName;
     
+    private Long usingOrganId;
+    
+    private String usingOrganName;
+    
     private String registerUserName;
     
     private UserDO registerUser;//登记人
