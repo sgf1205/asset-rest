@@ -5,3 +5,4 @@ resources/static/
 /.classpath
 .metadata/
 h2/
+src/main/resources/static/
