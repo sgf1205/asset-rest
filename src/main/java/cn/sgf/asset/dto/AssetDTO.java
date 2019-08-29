@@ -36,6 +36,15 @@ public class AssetDTO {
     private String supplier;
     private String contacts;
     private String tell;
+    @DateTimeFormat(pattern="yyyy-MM-dd")  
+    private Date accountingDate;//财务记账日期
+    
+    private String accountingNo;//财务记账凭证号
+    
+    private Integer life;//预计使用年限
+    
+    private String source;//资产来源
+    @DateTimeFormat(pattern="yyyy-MM-dd")  
     private Date expiryTime; //维保到期时间
     private String explain;
     

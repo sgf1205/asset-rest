@@ -30,15 +30,24 @@ public class AssetDO {
     private String name;
     @OneToOne
     @JoinColumn(name="classes_id",referencedColumnName = "id")
-    private ClassesDO classes;
-    private String specification;
+    private ClassesDO classes;//资产类别
+    private String specification;//品牌型号
     private String sn;
     private String metering;//计量单位
-    private Double money;
+    private Double money;//单价
+    
     
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @Column(name = "purchase_time")
-    private Date purchaseTime;//购买时间
+    private Date purchaseTime;//购置时间
+    
+    private Date accountingDate;//财务记账日期
+    
+    private String accountingNo;//财务记账凭证号
+    
+    private Integer life;//预计使用年限
+    
+    private String source;//资产来源
  
     private Integer status;
     
