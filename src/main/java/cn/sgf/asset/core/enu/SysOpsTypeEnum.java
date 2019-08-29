@@ -10,7 +10,7 @@ public enum SysOpsTypeEnum {
 	USED_BORROW(7,"资产借用"),
 	USED_RECEIVE(8,"资产领用"),
 	USED_BORROW_RETURN(9,"资产归还"),
-	SCRAPPED_RECOVERY(10,"恢复"),
+	SCRAPPED_RECOVERY(10,"资产报废恢复"),
 	MAINTAIN_FINISH(11,"资产完成维修")
 	;
 	
