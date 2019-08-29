@@ -15,7 +15,7 @@ public interface AssetService {
 
 	PageResult<AssetDTO> list(AssetSearchDTO searchDto);
 
-	void delete(Long[] ids);
+	void delete(Long[] ids,UserDTO currentUserDto);
 
 	List<AssetStatisticsDTO> statistics(String type);
 

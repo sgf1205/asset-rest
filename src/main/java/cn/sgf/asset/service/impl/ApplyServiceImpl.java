@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sgf.asset.core.enu.ApplyTypeEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
+import cn.sgf.asset.core.enu.SysOpsTypeEnum;
 import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.dao.ApplyDao;
 import cn.sgf.asset.dao.AssetDao;
@@ -31,6 +32,7 @@ import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.ApplyDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.service.ApplyService;
+import cn.sgf.asset.service.SysLogService;
 
 @Service
 public class ApplyServiceImpl implements ApplyService{
@@ -39,6 +41,9 @@ public class ApplyServiceImpl implements ApplyService{
 	
 	@Autowired
 	private ApplyDao applyDao;
+	
+	@Autowired
+	private SysLogService sysLogServiceImpl;
 
 	
 	@Override
@@ -73,6 +78,11 @@ public class ApplyServiceImpl implements ApplyService{
 		}
 		applyDo.setItems(items);
 		applyDao.save(applyDo);
+		if(applyDto.getType()==ApplyTypeEnum.BORROW.getCode()) {
+			sysLogServiceImpl.save(userDo, SysOpsTypeEnum.USED_BORROW,applyDto.getApplyUser()+"借用了资产");
+		}else if(applyDto.getType()==ApplyTypeEnum.RECEIVE.getCode()) {
+			sysLogServiceImpl.save(userDo, SysOpsTypeEnum.USED_RECEIVE,applyDto.getApplyUser()+"领用了资产");
+		}
 	}
 
 
@@ -121,6 +131,7 @@ public class ApplyServiceImpl implements ApplyService{
 				item.getAsset().setUsingOrgan(null);
 			});
 			applyDao.save(applyDo);
+			sysLogServiceImpl.save(currentUser.getId(), SysOpsTypeEnum.USED_BORROW_RETURN,"归还资产");
 		}
 	}
 

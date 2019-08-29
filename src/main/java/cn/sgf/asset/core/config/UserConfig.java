@@ -18,5 +18,7 @@ public class UserConfig {
 	
 	private AdminUser admin;
 	
+	private Long onlineTimeout;
+	
 	private List<Map<String, String>> defaultUsers;
 }

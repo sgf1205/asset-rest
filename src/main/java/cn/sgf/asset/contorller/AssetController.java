@@ -56,8 +56,9 @@ public class AssetController {
 	}
 
 	@RequestMapping("/delete")
-	public RespInfo del(Long[] ids) {
-		assetService.delete(ids);
+	public RespInfo del(@RequestHeader("token") String token,Long[] ids) {
+		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
+		assetService.delete(ids,currentUserDto);
 		return RespInfo.success();
 	}
 

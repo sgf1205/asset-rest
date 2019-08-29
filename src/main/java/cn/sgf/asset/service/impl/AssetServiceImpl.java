@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
+import cn.sgf.asset.core.enu.SysOpsTypeEnum;
 import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.dao.AssetDao;
 import cn.sgf.asset.domain.AssetDO;
@@ -38,12 +39,16 @@ import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.AssetStatisticsDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.service.AssetService;
+import cn.sgf.asset.service.SysLogService;
 
 @Service
 public class AssetServiceImpl implements AssetService {
 
 	@Autowired
 	private AssetDao assetDao;
+	
+	@Autowired
+	private SysLogService sysLogService;
 
 	@Override
 	@Transactional
@@ -72,6 +77,7 @@ public class AssetServiceImpl implements AssetService {
 			assetDo.setEditTime(new Date());
 		}
 		assetDao.save(assetDo);
+		sysLogService.save(userDo, SysOpsTypeEnum.REGISTER,"登记资产"+assetDo.getName());
 	}
 
 	@Override
@@ -136,12 +142,13 @@ public class AssetServiceImpl implements AssetService {
 	
 	@Override
 	@Transactional
-	public void delete(Long[] ids) {
+	public void delete(Long[] ids,UserDTO currentUserDto) {
 		// TODO Auto-generated method stub
 		for (Long id : ids) {
 			AssetDO assetDo = assetDao.getOne(id);
 			assetDo.setDeleteFlag(DeleteEnum.DELETED.getCode());
 			assetDao.save(assetDo);
+			sysLogService.save(currentUserDto.getId(), SysOpsTypeEnum.DELETE,"删除资产:"+assetDo.getName());
 		}
 	}
 	

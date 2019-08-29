@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sgf.asset.core.enu.ApplyTypeEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
+import cn.sgf.asset.core.enu.SysOpsTypeEnum;
 import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.dao.ApplyDao;
 import cn.sgf.asset.dao.AssetDao;
@@ -47,6 +48,9 @@ public class RepairServiceImpl implements RepairService{
 	
 	@Autowired
 	private RepairDao repairDao;
+	
+	@Autowired
+	private SysLogServiceImpl sysLogServiceImpl;
 
 	
 	@Override
@@ -74,6 +78,7 @@ public class RepairServiceImpl implements RepairService{
 		}
 		repairDo.setItems(items);
 		repairDao.save(repairDo);
+		sysLogServiceImpl.save(userDo, SysOpsTypeEnum.MAINTAIN);
 	}
 
 
@@ -123,6 +128,7 @@ public class RepairServiceImpl implements RepairService{
 			userDo.setId(currentUser.getId());
 			repairDo.setFinishUesr(userDo);
 			repairDao.save(repairDo);
+			sysLogServiceImpl.save(userDo, SysOpsTypeEnum.MAINTAIN_FINISH);
 		}
 	}
 

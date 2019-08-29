@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sgf.asset.core.enu.ApplyTypeEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
+import cn.sgf.asset.core.enu.SysOpsTypeEnum;
 import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.dao.ApplyDao;
 import cn.sgf.asset.dao.AssetDao;
@@ -35,6 +36,7 @@ import cn.sgf.asset.dto.ScrapDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.service.ApplyService;
 import cn.sgf.asset.service.ScrapService;
+import cn.sgf.asset.service.SysLogService;
 
 @Service
 public class ScrapServiceImpl implements ScrapService{
@@ -43,6 +45,9 @@ public class ScrapServiceImpl implements ScrapService{
 	
 	@Autowired
 	private ScrapDao scrapDao;
+	
+	@Autowired
+	private SysLogService sysLogService;
 
 	
 	@Override
@@ -70,6 +75,7 @@ public class ScrapServiceImpl implements ScrapService{
 		}
 		scrapDo.setItems(items);
 		scrapDao.save(scrapDo);
+		sysLogService.save(userDo, SysOpsTypeEnum.SCRAPPED);
 	}
 
 
@@ -118,6 +124,7 @@ public class ScrapServiceImpl implements ScrapService{
 			userDo.setId(currentUser.getId());
 			scrapDo.setRecoveryUesr(userDo);
 			scrapDao.save(scrapDo);
+			sysLogService.save(userDo, SysOpsTypeEnum.SCRAPPED_RECOVERY);
 		}
 	}
 

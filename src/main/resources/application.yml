@@ -4,6 +4,7 @@ server:
 #默认密码
 #默认管理员账号密码、角色ID
 user:
+    onlineTimeout: 60000 #用户在线超时毫秒数
     defaultPwd: 111111
     admin:
         name: 超级管理员
