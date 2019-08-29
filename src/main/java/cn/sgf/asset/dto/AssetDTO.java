@@ -57,6 +57,8 @@ public class AssetDTO {
     
     private String usingOrganName;
     
+    private Date usingTime;
+    
     private String registerUserName;
     
     private UserDO registerUser;//登记人

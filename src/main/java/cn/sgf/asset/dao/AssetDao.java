@@ -1,5 +1,6 @@
 package cn.sgf.asset.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -25,8 +26,8 @@ public interface AssetDao extends JpaRepository<AssetDO, Long>,JpaSpecificationE
 	void editStatus(Integer status, Long id);
 	
 	@Modifying
-	@Query("update AssetDO u set u.status = :status,u.usingOrgan=:usingOrgan where u.id = :id")
-	void editStatus(Integer status,SysOrganDO usingOrgan, Long id);
+	@Query("update AssetDO u set u.status = :status,u.usingOrgan=:usingOrgan,usingTime=:usingTime where u.id = :id")
+	void editStatus(Integer status,SysOrganDO usingOrgan,Date usingTime, Long id);
 	
 	@Query("select new cn.sgf.asset.dto.AssetStatisticsDTO( a.classes.name,"
 			+ "sum(case a.status when 0 then 1 else 0 end) ,"

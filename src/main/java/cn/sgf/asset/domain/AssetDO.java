@@ -82,6 +82,9 @@ public class AssetDO {
     @JoinColumn(name="using_organ_id",referencedColumnName = "id")
     private SysOrganDO usingOrgan;//当前使用部门
     
+    @Column(name="using_time")
+    private Date usingTime;//开始使用时间
+    
     @OneToOne
     @JoinColumn(name="edit_user_id",referencedColumnName = "id",insertable=false)
     private UserDO editUser;//修改人
