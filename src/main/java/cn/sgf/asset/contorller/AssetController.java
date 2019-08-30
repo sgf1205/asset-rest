@@ -1,12 +1,18 @@
 package cn.sgf.asset.contorller;
 
+import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
 import cn.sgf.asset.core.model.PageParam;
@@ -70,6 +78,25 @@ public class AssetController {
 	@RequestMapping("/statistics")
 	public RespInfo statistics(String type) {
 		return RespInfo.success(assetService.statistics(type));
+	}
+	
+	@RequestMapping("/export")
+	public void export(AssetSearchDTO searchDto,HttpServletResponse response) {
+		PageResult<AssetDTO> pageResult=assetService.list(searchDto);
+		Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("资产清单","资产清单"),
+				AssetDTO.class, pageResult.getResult());
+		String fileName="asset";
+		try {
+			//设置返回响应头
+			response.setContentType("application/xls;charset=UTF-8");
+			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+			OutputStream out = response.getOutputStream();
+			workbook.write(out);
+			out.flush();
+			out.close();
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
 }

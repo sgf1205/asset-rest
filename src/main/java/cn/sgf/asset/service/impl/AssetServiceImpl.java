@@ -125,6 +125,7 @@ public class AssetServiceImpl implements AssetService {
 			dto.setRegisterUserName(assetDo.getRegisterUser().getName());
 			dto.setOrganId(assetDo.getRegisterOrgan().getId());
 			dto.setOrganName(assetDo.getRegisterOrgan().getName());
+			dto.setStatusLabel(StatusEnum.getDesc(dto.getStatus()));
 			if(assetDo.getUsingOrgan()!=null) {
 				dto.setUsingOrganId(assetDo.getUsingOrgan().getId());
 				dto.setUsingOrganName(assetDo.getUsingOrgan().getName());

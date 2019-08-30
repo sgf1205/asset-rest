@@ -69,10 +69,10 @@ public class ApplyServiceImpl implements ApplyService{
 			applyItem.setCreateTime(applyDo.getCreateTime());
 			if(applyDto.getType()==ApplyTypeEnum.BORROW.getCode()) {
 				applyItem.setStatus(StatusEnum.USED_BORROW.getCode());
-				assetDao.editStatus(StatusEnum.USED_BORROW.getCode(),organ,applyDo.getCreateTime(), assetId);
+				assetDao.editStatus(StatusEnum.USED_BORROW.getCode(),organ,applyDo.getCreateTime(),applyDo.getApplyUser(), assetId);
 			}else if(applyDto.getType()==ApplyTypeEnum.RECEIVE.getCode()) {
 				applyItem.setStatus(StatusEnum.USED_RECEIVE.getCode());
-				assetDao.editStatus(StatusEnum.USED_RECEIVE.getCode(),organ,applyDo.getCreateTime(), assetId);
+				assetDao.editStatus(StatusEnum.USED_RECEIVE.getCode(),organ,applyDo.getCreateTime(),applyDo.getApplyUser(), assetId);
 			}
 			items.add(applyItem);
 		}
@@ -130,6 +130,7 @@ public class ApplyServiceImpl implements ApplyService{
 				item.getAsset().setStatus(StatusEnum.FREE.getCode());
 				item.getAsset().setUsingTime(null);
 				item.getAsset().setUsingOrgan(null);
+				item.getAsset().setUsingUser(null);
 			});
 			applyDao.save(applyDo);
 			sysLogServiceImpl.save(currentUser.getId(), SysOpsTypeEnum.USED_BORROW_RETURN,"归还资产");

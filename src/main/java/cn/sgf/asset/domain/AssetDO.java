@@ -85,6 +85,9 @@ public class AssetDO {
     @Column(name="using_time")
     private Date usingTime;//开始使用时间
     
+    @Column(name="using_user")
+    private String usingUser;//使用人
+    
     @OneToOne
     @JoinColumn(name="edit_user_id",referencedColumnName = "id",insertable=false)
     private UserDO editUser;//修改人

@@ -20,11 +20,18 @@ public enum StatusEnum {
 		this.desc=desc;
 	}
 	
+	
+	
 	public int getCode() {
 		return this.code;
 	}
 	
-	public String getDesc() {
-		return this.desc;
+	public static String getDesc(int code) {
+		for(StatusEnum e:StatusEnum.values()) {
+			if(e.getCode()==code) {
+				return e.desc;
+			}
+		}
+		return null;
 	}
 }
