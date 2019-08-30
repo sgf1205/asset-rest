@@ -29,8 +29,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.Lists;
+
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
 import cn.sgf.asset.core.model.PageParam;
@@ -43,6 +48,7 @@ import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.AssetDTO;
+import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.service.AssetService;
@@ -59,14 +65,14 @@ public class AssetController {
 	public RespInfo save(@RequestHeader("token") String token, AssetDTO assetDto) {
 		logger.info("asset:{}", assetDto);
 		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
-		assetService.save(assetDto,currentUserDto);
+		assetService.save(assetDto, currentUserDto);
 		return RespInfo.success();
 	}
 
 	@RequestMapping("/delete")
-	public RespInfo del(@RequestHeader("token") String token,Long[] ids) {
+	public RespInfo del(@RequestHeader("token") String token, Long[] ids) {
 		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
-		assetService.delete(ids,currentUserDto);
+		assetService.delete(ids, currentUserDto);
 		return RespInfo.success();
 	}
 
@@ -74,29 +80,48 @@ public class AssetController {
 	public RespInfo list(AssetSearchDTO searchDto) {
 		return RespInfo.success(assetService.list(searchDto));
 	}
-	
+
 	@RequestMapping("/statistics")
 	public RespInfo statistics(String type) {
 		return RespInfo.success(assetService.statistics(type));
 	}
-	
+
 	@RequestMapping("/export")
-	public void export(AssetSearchDTO searchDto,HttpServletResponse response) {
-		PageResult<AssetDTO> pageResult=assetService.list(searchDto);
-		Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("资产清单","资产清单"),
-				AssetDTO.class, pageResult.getResult());
-		String fileName="asset";
+	public void export(AssetSearchDTO searchDto, HttpServletResponse response) {
+		PageResult<AssetDTO> pageResult = assetService.list(searchDto);
+		Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("资产清单", "资产清单"), AssetDTO.class,
+				pageResult.getResult());
+		String fileName = "asset";
 		try {
-			//设置返回响应头
+			// 设置返回响应头
 			response.setContentType("application/xls;charset=UTF-8");
-			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
 			OutputStream out = response.getOutputStream();
 			workbook.write(out);
 			out.flush();
 			out.close();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
 	
+	@RequestMapping("/downloadTemplate")
+	public void downloadTemplate(HttpServletResponse response) {
+		TemplateExportParams e=new TemplateExportParams();
+		ExportParams params = new ExportParams("资产清单", "资产清单导入模板", ExcelType.XSSF);
+		params.setDictHandler(new GlobalExcelDictHandler());
+		Workbook workbook = ExcelExportUtil.exportExcel(params, AssetImportDTO.class, Lists.newArrayList() );
+		try {
+			// 设置返回响应头
+			response.setContentType("application/xls;charset=UTF-8");
+			response.setHeader("Content-Disposition", "attachment;filename=asset");
+			OutputStream out = response.getOutputStream();
+			workbook.write(out);
+			out.flush();
+			out.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
 }
