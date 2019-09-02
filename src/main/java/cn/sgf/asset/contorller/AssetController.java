@@ -6,13 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -32,10 +36,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.collect.Lists;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
+import cn.afterturn.easypoi.word.parse.excel.ExcelEntityParse;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
 import cn.sgf.asset.core.model.PageParam;
@@ -43,6 +49,8 @@ import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.core.model.RespInfo;
 import cn.sgf.asset.core.utils.AuthUtil;
 import cn.sgf.asset.dao.AssetDao;
+import cn.sgf.asset.dao.ClassesDao;
+import cn.sgf.asset.dao.OrganDao;
 import cn.sgf.asset.domain.AssetDO;
 import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.SysOrganDO;
@@ -60,6 +68,12 @@ public class AssetController {
 	private Logger logger = LoggerFactory.getLogger(AssetController.class);
 	@Autowired
 	private AssetService assetService;
+	
+	@Autowired
+	private ClassesDao classesDao;
+	
+	@Autowired
+	private OrganDao organDao;
 
 	@RequestMapping("/save")
 	public RespInfo save(@RequestHeader("token") String token, AssetDTO assetDto) {
@@ -107,10 +121,55 @@ public class AssetController {
 	
 	@RequestMapping("/downloadTemplate")
 	public void downloadTemplate(HttpServletResponse response) {
-		TemplateExportParams e=new TemplateExportParams();
-		ExportParams params = new ExportParams("资产清单", "资产清单导入模板", ExcelType.XSSF);
-		params.setDictHandler(new GlobalExcelDictHandler());
+		List<ExcelExportEntity> entity = new ArrayList<ExcelExportEntity>();
+		ExcelExportEntity excelentity = new ExcelExportEntity("资产名称", "name");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("品牌型号", "specification");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("资产类别", "classesName");
+		List<ClassesDO> classesList=classesDao.findAll();
+		String[] classesArray=new String[classesList.size()];
+		for(int i=0;i<classesList.size();i++) {
+			classesArray[i]=classesList.get(i).getName();
+		}
+		excelentity.setReplace(classesArray);
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("资产来源", "source");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("购置时间", "purchaseTime");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("预计使用年限", "life");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("单价", "money");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("所属部门", "organName");
+		List<SysOrganDO> organList=organDao.findAll();
+		String[] organArray=organList.stream().map(organ->organ.getName()).toArray(String[]::new);
+		excelentity.setReplace(organArray);
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("财务记账日期", "accountingDate");
+		entity.add(excelentity);
+		excelentity = new ExcelExportEntity("财务记账凭账号", "accountingNo");
+		entity.add(excelentity);
+		ExportParams params = new ExportParams("资产清单", "资产清单导入模板");
 		Workbook workbook = ExcelExportUtil.exportExcel(params, AssetImportDTO.class, Lists.newArrayList() );
+		
+		// 设置第一列的1-10000行为下拉列表
+		CellRangeAddressList regions = new CellRangeAddressList(1, 10000, 2, 2);
+		// 创建下拉列表数据
+		DVConstraint constraint = DVConstraint.createExplicitListConstraint(classesArray);
+		// 绑定
+		HSSFDataValidation dataValidation = new HSSFDataValidation(regions, constraint);
+		workbook.getSheetAt(0).addValidationData(dataValidation);
+		
+		// 设置第一列的1-10000行为下拉列表
+		regions = new CellRangeAddressList(1, 10000,7, 7);
+		// 创建下拉列表数据
+		constraint = DVConstraint.createExplicitListConstraint(organArray);
+		// 绑定
+		dataValidation = new HSSFDataValidation(regions, constraint);
+		workbook.getSheetAt(0).addValidationData(dataValidation);
+		
 		try {
 			// 设置返回响应头
 			response.setContentType("application/xls;charset=UTF-8");
