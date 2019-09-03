@@ -1,10 +1,17 @@
 package cn.sgf.asset.contorller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -32,15 +39,20 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.google.common.collect.Lists;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.word.parse.excel.ExcelEntityParse;
 import cn.sgf.asset.core.enu.DeleteEnum;
 import cn.sgf.asset.core.enu.StatusEnum;
@@ -99,6 +111,8 @@ public class AssetController {
 	public RespInfo statistics(String type) {
 		return RespInfo.success(assetService.statistics(type));
 	}
+	
+	
 
 	@RequestMapping("/export")
 	public void export(AssetSearchDTO searchDto, HttpServletResponse response) {
@@ -119,55 +133,94 @@ public class AssetController {
 		}
 	}
 	
+	@RequestMapping("/import")
+	public RespInfo assetImport(@RequestHeader("token") String token,@RequestParam MultipartFile file) {
+		logger.info("fileName:{}",file.getOriginalFilename());
+		UserDTO user=AuthUtil.getUserByToken(token);
+		try {
+			ImportParams params = new ImportParams();
+			params.setHeadRows(1);
+			params.setTitleRows(1);
+			params.setNeedVerify(true);
+            ExcelImportResult<AssetImportDTO> result = ExcelImportUtil.importExcelMore(
+                    file.getInputStream(),
+                    AssetImportDTO.class, params);
+            for(AssetImportDTO importDto:result.getFailList()) {
+            	logger.info("导入记录：{}",importDto);
+            }
+            logger.info("导入成功结果：{},失败：{}",result.getList().size(),result.getFailList().size());
+            if(result.isVerfiyFail()) {
+	            FileOutputStream fos = new FileOutputStream(user.getId()+"_import_fail.xls");
+	            result.getFailWorkbook().write(fos);
+	            fos.close();
+            }
+            Map<String,Object> importResult=new HashMap<String,Object>();
+            importResult.put("success", result.getList().size());
+            importResult.put("fail", result.getFailList().size());
+            return RespInfo.success(importResult);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("导入异常:{}",e);
+		}
+		return RespInfo.success();
+	}
+	
+	@RequestMapping("/downloadError")
+	public void downloadError(@RequestHeader("token") String token,HttpServletResponse response) {
+		BufferedInputStream bis=null;
+		BufferedOutputStream bos =null;
+		try {
+			UserDTO user=AuthUtil.getUserByToken(token);
+			File errorFile=new File(user.getId()+"_import_fail.xls");
+			FileInputStream fis = new FileInputStream(errorFile);
+			// 设置返回响应头
+			response.setContentType("application/xls;charset=UTF-8");
+			response.setHeader("Content-Disposition", "attachment;filename=asset");
+			bis = new BufferedInputStream(fis);
+			bos = new BufferedOutputStream(response.getOutputStream());
+			byte[] buff = new byte[2048];
+			int bytesRead;
+			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+				bos.write(buff, 0, bytesRead);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("导入结果下载异常：{}",e);
+		}finally {
+			if (bis != null)
+				try {
+					bis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if (bos != null)
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
 	@RequestMapping("/downloadTemplate")
 	public void downloadTemplate(HttpServletResponse response) {
-		List<ExcelExportEntity> entity = new ArrayList<ExcelExportEntity>();
-		ExcelExportEntity excelentity = new ExcelExportEntity("资产名称", "name");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("品牌型号", "specification");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("资产类别", "classesName");
-		List<ClassesDO> classesList=classesDao.findAll();
-		String[] classesArray=new String[classesList.size()];
-		for(int i=0;i<classesList.size();i++) {
-			classesArray[i]=classesList.get(i).getName();
-		}
-		excelentity.setReplace(classesArray);
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("资产来源", "source");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("购置时间", "purchaseTime");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("预计使用年限", "life");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("单价", "money");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("所属部门", "organName");
-		List<SysOrganDO> organList=organDao.findAll();
-		String[] organArray=organList.stream().map(organ->organ.getName()).toArray(String[]::new);
-		excelentity.setReplace(organArray);
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("财务记账日期", "accountingDate");
-		entity.add(excelentity);
-		excelentity = new ExcelExportEntity("财务记账凭账号", "accountingNo");
-		entity.add(excelentity);
+
 		ExportParams params = new ExportParams("资产清单", "资产清单导入模板");
 		Workbook workbook = ExcelExportUtil.exportExcel(params, AssetImportDTO.class, Lists.newArrayList() );
-		
-		// 设置第一列的1-10000行为下拉列表
-		CellRangeAddressList regions = new CellRangeAddressList(1, 10000, 2, 2);
-		// 创建下拉列表数据
-		DVConstraint constraint = DVConstraint.createExplicitListConstraint(classesArray);
-		// 绑定
-		HSSFDataValidation dataValidation = new HSSFDataValidation(regions, constraint);
+		List<ClassesDO> classesList=classesDao.findAll();
+		String[] classesArray=classesList.stream().map(classes->classes.getName()).toArray(String[]::new);;
+		List<SysOrganDO> organList=organDao.findAll();
+		String[] organArray=organList.stream().map(organ->organ.getName()).toArray(String[]::new);
+		//资产分类下拉框
+		CellRangeAddressList classesRegions = new CellRangeAddressList(1, 10000, 2, 2);
+		DVConstraint clasesConstraint = DVConstraint.createExplicitListConstraint(classesArray);
+		HSSFDataValidation dataValidation = new HSSFDataValidation(classesRegions, clasesConstraint);
 		workbook.getSheetAt(0).addValidationData(dataValidation);
 		
-		// 设置第一列的1-10000行为下拉列表
-		regions = new CellRangeAddressList(1, 10000,7, 7);
-		// 创建下拉列表数据
-		constraint = DVConstraint.createExplicitListConstraint(organArray);
-		// 绑定
-		dataValidation = new HSSFDataValidation(regions, constraint);
+		//部门选择下拉框
+		CellRangeAddressList organRegions = new CellRangeAddressList(1, 10000,7, 7);
+		DVConstraint organConstraint = DVConstraint.createExplicitListConstraint(organArray);
+		dataValidation = new HSSFDataValidation(organRegions, organConstraint);
 		workbook.getSheetAt(0).addValidationData(dataValidation);
 		
 		try {
