@@ -11,5 +11,7 @@ import cn.sgf.asset.domain.ClassesDO;
 public interface ClassesDao extends JpaRepository<ClassesDO, Long> {
 
 	List<ClassesDO> findByDeleteFlag(int code);
+
+	ClassesDO findByName(String classesName);
 	
 }

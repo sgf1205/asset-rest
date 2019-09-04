@@ -21,9 +21,12 @@ import lombok.Data;
 public class AssetImportDTO {
 	@Excel(name="资产名称",orderNum = "1",width=30)
 	@NotNull(message = "资产名称不能为空")
-    private String assetName;
-    @Excel(name="资产类别",orderNum = "3",dict="classDict")
+    private String name;
+    @Excel(name="资产类别",orderNum = "3")
     private String classesName;
+    
+    private Long classesId;
+    
     @Excel(name="品牌型号",orderNum = "2")
     @NotNull(message = "品牌型号不能为空")
     private String specification;
@@ -48,8 +51,10 @@ public class AssetImportDTO {
     @NotNull(message = "资产来源不能为空")
     private String source;//资产来源
     
-    @Excel(name="所属部门",orderNum = "8",dict = "organDict")
+    @Excel(name="所属部门",orderNum = "8")
     private String organName;
+    
+    private Long organId;//登记部门 
     
     
 }

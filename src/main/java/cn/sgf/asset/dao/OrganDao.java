@@ -13,4 +13,6 @@ import cn.sgf.asset.domain.UserDO;
 public interface OrganDao extends JpaRepository<SysOrganDO, Long> {
 
 	List<SysOrganDO> findByPid(Long id);
+
+	SysOrganDO findByName(String organName);
 }

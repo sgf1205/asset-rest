@@ -30,11 +30,14 @@ import cn.sgf.asset.core.enu.StatusEnum;
 import cn.sgf.asset.core.enu.SysOpsTypeEnum;
 import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.dao.AssetDao;
+import cn.sgf.asset.dao.ClassesDao;
+import cn.sgf.asset.dao.OrganDao;
 import cn.sgf.asset.domain.AssetDO;
 import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.AssetDTO;
+import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.AssetStatisticsDTO;
 import cn.sgf.asset.dto.UserDTO;
@@ -78,6 +81,19 @@ public class AssetServiceImpl implements AssetService {
 		}
 		assetDao.save(assetDo);
 		sysLogService.save(userDo, SysOpsTypeEnum.REGISTER,"登记资产"+assetDo.getName());
+	}
+	
+	@Override
+	public void save(List<AssetImportDTO> assetImportDtos,UserDTO currentUserDto) {
+		// TODO Auto-generated method stub
+		for(AssetImportDTO assetImportDto:assetImportDtos) {
+			AssetDTO assetDto=new AssetDTO();
+			BeanUtils.copyProperties(assetImportDto, assetDto);
+			assetDto.setLife(Integer.parseInt(assetImportDto.getLife()));
+			assetDto.setMoney(Double.parseDouble(assetImportDto.getMoney()));
+			save(assetDto, currentUserDto);
+		}
+		sysLogService.save(currentUserDto.getId(), SysOpsTypeEnum.REGISTER,"导入资产"+assetImportDtos.size()+"条");
 	}
 
 	@Override

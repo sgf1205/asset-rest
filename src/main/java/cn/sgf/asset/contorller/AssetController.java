@@ -71,6 +71,7 @@ import cn.sgf.asset.dto.AssetDTO;
 import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.UserDTO;
+import cn.sgf.asset.handler.AssetImportVerifyHandler;
 import cn.sgf.asset.service.AssetService;
 
 @RestController
@@ -86,6 +87,9 @@ public class AssetController {
 	
 	@Autowired
 	private OrganDao organDao;
+	
+	@Autowired
+	private AssetImportVerifyHandler assetImportVerifyHandler;
 
 	@RequestMapping("/save")
 	public RespInfo save(@RequestHeader("token") String token, AssetDTO assetDto) {
@@ -136,21 +140,20 @@ public class AssetController {
 	@RequestMapping("/import")
 	public RespInfo assetImport(@RequestHeader("token") String token,@RequestParam MultipartFile file) {
 		logger.info("fileName:{}",file.getOriginalFilename());
-		UserDTO user=AuthUtil.getUserByToken(token);
+		UserDTO currentUserDto=AuthUtil.getUserByToken(token);
 		try {
 			ImportParams params = new ImportParams();
 			params.setHeadRows(1);
 			params.setTitleRows(1);
 			params.setNeedVerify(true);
+			params.setVerifyHandler(assetImportVerifyHandler);
             ExcelImportResult<AssetImportDTO> result = ExcelImportUtil.importExcelMore(
                     file.getInputStream(),
                     AssetImportDTO.class, params);
-            for(AssetImportDTO importDto:result.getFailList()) {
-            	logger.info("导入记录：{}",importDto);
-            }
+            assetService.save(result.getList(), currentUserDto);
             logger.info("导入成功结果：{},失败：{}",result.getList().size(),result.getFailList().size());
             if(result.isVerfiyFail()) {
-	            FileOutputStream fos = new FileOutputStream(user.getId()+"_import_fail.xls");
+	            FileOutputStream fos = new FileOutputStream(currentUserDto.getId()+"_import_fail.xls");
 	            result.getFailWorkbook().write(fos);
 	            fos.close();
             }
