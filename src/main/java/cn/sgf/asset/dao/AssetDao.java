@@ -21,6 +21,8 @@ public interface AssetDao extends JpaRepository<AssetDO, Long>,JpaSpecificationE
 
 	List<AssetDO> findByDeleteFlag(int code);
 	
+	AssetDO findByCode(String code);
+	
 	@Modifying
 	@Query("update AssetDO u set u.status = :status where u.id = :id")
 	void editStatus(Integer status, Long id);

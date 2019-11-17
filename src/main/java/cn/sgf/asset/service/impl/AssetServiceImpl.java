@@ -74,7 +74,7 @@ public class AssetServiceImpl implements AssetService {
 			assetDo.setRegisterTime(new Date());
 			assetDo.setStatus(StatusEnum.FREE.getCode());
 			assetDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
-			assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", ""));
+			assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
 		}else {//修改
 			assetDo.setEditUser(userDo);
 			assetDo.setEditTime(new Date());
@@ -184,6 +184,12 @@ public class AssetServiceImpl implements AssetService {
 			return assetDao.statisticsByUsingOrgan();
 		}
 		return null;
+	}
+	
+	@Override
+	public AssetDO getByCode(String code) {
+		// TODO Auto-generated method stub
+		return assetDao.findByCode(code);
 	}
 
 }

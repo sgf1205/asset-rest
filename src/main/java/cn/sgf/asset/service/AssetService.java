@@ -3,6 +3,7 @@ package cn.sgf.asset.service;
 import java.util.List;
 
 import cn.sgf.asset.core.model.PageResult;
+import cn.sgf.asset.domain.AssetDO;
 import cn.sgf.asset.dto.AssetDTO;
 import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
@@ -22,4 +23,7 @@ public interface AssetService {
 
 	List<AssetStatisticsDTO> statistics(String type);
 
+	AssetDO getByCode(String code);
+
+	
 }
