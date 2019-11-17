@@ -52,6 +52,9 @@ public class ApplyDO {
 	@Column(name = "create_time")
 	private Date createTime;// 创建时间
 	
+	@Column(name = "apply_time")
+	private Date applyTime;// 领用时间
+	
 	private String remarks;
 	
 	@OneToOne

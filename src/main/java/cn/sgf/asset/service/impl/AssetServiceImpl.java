@@ -111,6 +111,11 @@ public class AssetServiceImpl implements AssetService {
 				if (searchDto.getStatus() != null) {
 					predicates.add(cb.equal(root.get("status").as(Integer.class), searchDto.getStatus()));
 				}
+				if(searchDto.getNeStatuss()!=null && searchDto.getNeStatuss().size()>0) {
+					for(Integer neStatus:searchDto.getNeStatuss()) {
+						predicates.add(cb.notEqual(root.get("status").as(Integer.class), neStatus));
+					}
+				}
 				if (searchDto.getRegisterOrganId() != null) {
 					SysOrganDO registerOrgan = new SysOrganDO();
 					registerOrgan.setId(searchDto.getRegisterOrganId());
@@ -176,7 +181,7 @@ public class AssetServiceImpl implements AssetService {
 		if(type.equals("classes")) {
 			return assetDao.statisticsByClasses();
 		}else if(type.equals("organ")) {
-			return assetDao.statisticsByClasses();
+			return assetDao.statisticsByUsingOrgan();
 		}
 		return null;
 	}

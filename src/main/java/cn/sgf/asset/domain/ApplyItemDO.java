@@ -57,9 +57,11 @@ public class ApplyItemDO {
 	
 	@Column(name = "retreat_time")
 	private Date retreatTime;// 归还时间
-
+	
 	@Column(name = "create_time")
 	private Date createTime;// 创建时间
+	
+	private Integer oldStatus;//原来的状态，用在资产维修，资产维修之后需要恢复资产原来的状态
 	
 	private Integer status; //资产状态
 	

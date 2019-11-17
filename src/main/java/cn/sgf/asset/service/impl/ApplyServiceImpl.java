@@ -59,6 +59,9 @@ public class ApplyServiceImpl implements ApplyService{
 		organ.setId(applyDto.getOrganId());
 		applyDo.setOrgan(organ);
 		applyDo.setCreateTime(new Date());
+		if(applyDo.getApplyTime()==null) {
+			applyDo.setApplyTime(applyDo.getCreateTime());
+		}
 		List<ApplyItemDO> items=new ArrayList<ApplyItemDO>();
 		for(Long assetId:applyDto.getAssetIds()) {
 			ApplyItemDO applyItem=new ApplyItemDO();

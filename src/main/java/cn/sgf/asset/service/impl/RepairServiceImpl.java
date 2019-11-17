@@ -66,12 +66,14 @@ public class RepairServiceImpl implements RepairService{
 		repairDo.setStatus(StatusEnum.MAINTAIN.getCode());
 		List<ApplyItemDO> items=new ArrayList<ApplyItemDO>();
 		for(Long assetId:dto.getAssetIds()) {
+			AssetDO assetDo=assetDao.findById(assetId).get();
 			ApplyItemDO applyItem=new ApplyItemDO();
 			AssetDO asset=new AssetDO();
 			asset.setId(assetId);
 			applyItem.setAsset(asset);
 			applyItem.setRepair(repairDo);
 			applyItem.setCreateTime(repairDo.getCreateTime());
+			applyItem.setOldStatus(assetDo.getStatus());
 			applyItem.setStatus(StatusEnum.MAINTAIN.getCode());
 			assetDao.editStatus(StatusEnum.MAINTAIN.getCode(), assetId);
 			items.add(applyItem);
@@ -122,7 +124,7 @@ public class RepairServiceImpl implements RepairService{
 				item.setStatus(StatusEnum.SCRAPPED_RECOVERY.getCode());
 				item.setRetreatTime(now);
 				item.getAsset().setUsingOrgan(item.getAsset().getRegisterOrgan());
-				item.getAsset().setStatus(StatusEnum.FREE.getCode());
+				item.getAsset().setStatus(item.getOldStatus());
 			});
 			UserDO userDo = new UserDO();
 			userDo.setId(currentUser.getId());

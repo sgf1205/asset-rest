@@ -40,6 +40,8 @@ public class ApplyDTO {
 
 	private Date createTime;// 创建时间
 	
+	private Date applyTime;//领用时间
+	
 	private Date expectRetreatTime;//预计归还时间
 	
 	private Integer status;//借用单状态

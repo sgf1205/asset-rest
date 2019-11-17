@@ -1,6 +1,7 @@
 package cn.sgf.asset.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
@@ -21,6 +22,8 @@ public class AssetSearchDTO {
 	private Long usingOrganId;//使用部门
 	
 	private Integer status;
+	
+	private List<Integer> neStatuss;
 	
 	private Double lowMoney;
 	
