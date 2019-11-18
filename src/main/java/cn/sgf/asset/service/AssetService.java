@@ -8,6 +8,7 @@ import cn.sgf.asset.dto.AssetDTO;
 import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.AssetStatisticsDTO;
+import cn.sgf.asset.dto.CheckInfoDTO;
 import cn.sgf.asset.dto.UserDTO;
 
 
@@ -23,7 +24,9 @@ public interface AssetService {
 
 	List<AssetStatisticsDTO> statistics(String type);
 
-	AssetDO getByCode(String code);
+	AssetDO getByCodeAndUsingOrganId(Long id,Long usingOrganId);
+
+	void saveCheckInfo(CheckInfoDTO checkInfoDto, UserDTO currentUserDto);
 
 	
 }

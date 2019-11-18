@@ -30,9 +30,11 @@ import cn.sgf.asset.core.enu.StatusEnum;
 import cn.sgf.asset.core.enu.SysOpsTypeEnum;
 import cn.sgf.asset.core.model.PageResult;
 import cn.sgf.asset.dao.AssetDao;
+import cn.sgf.asset.dao.CheckInfoDao;
 import cn.sgf.asset.dao.ClassesDao;
 import cn.sgf.asset.dao.OrganDao;
 import cn.sgf.asset.domain.AssetDO;
+import cn.sgf.asset.domain.CheckInfoDO;
 import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
@@ -40,6 +42,7 @@ import cn.sgf.asset.dto.AssetDTO;
 import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
 import cn.sgf.asset.dto.AssetStatisticsDTO;
+import cn.sgf.asset.dto.CheckInfoDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.service.AssetService;
 import cn.sgf.asset.service.SysLogService;
@@ -49,6 +52,9 @@ public class AssetServiceImpl implements AssetService {
 
 	@Autowired
 	private AssetDao assetDao;
+	
+	@Autowired
+	private CheckInfoDao checkInfoDao;
 	
 	@Autowired
 	private SysLogService sysLogService;
@@ -81,6 +87,23 @@ public class AssetServiceImpl implements AssetService {
 		}
 		assetDao.save(assetDo);
 		sysLogService.save(userDo, SysOpsTypeEnum.REGISTER,"登记资产"+assetDo.getName());
+	}
+	
+	@Override
+	public void saveCheckInfo(CheckInfoDTO checkInfoDto, UserDTO currentUserDto) {
+		// TODO Auto-generated method stub
+		CheckInfoDO checkInfoDo=new CheckInfoDO();
+		BeanUtils.copyProperties(currentUserDto, checkInfoDo);
+		checkInfoDo.setUser(checkInfoDto.getUser());
+		checkInfoDo.setCreateTime(new Date());
+		checkInfoDo.setCheckTime(checkInfoDo.getCreateTime());
+		UserDO userDo = new UserDO();
+		userDo.setId(currentUserDto.getId());
+		SysOrganDO organ=new SysOrganDO();
+		organ.setId(checkInfoDto.getOrganId());
+		checkInfoDo.setCreateUesr(userDo);
+		checkInfoDo.setOrgan(organ);
+		checkInfoDao.save(checkInfoDo);
 	}
 	
 	@Override
@@ -187,9 +210,11 @@ public class AssetServiceImpl implements AssetService {
 	}
 	
 	@Override
-	public AssetDO getByCode(String code) {
+	public AssetDO getByCodeAndUsingOrganId(Long id,Long usingOrganId) {
 		// TODO Auto-generated method stub
-		return assetDao.findByCode(code);
+		SysOrganDO usingOrgan=new SysOrganDO();
+		usingOrgan.setId(usingOrganId);
+		return assetDao.findByIdAndUsingOrgan(id,usingOrgan);
 	}
 
 }

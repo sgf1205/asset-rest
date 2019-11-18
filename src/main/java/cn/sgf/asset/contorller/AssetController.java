@@ -36,6 +36,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,12 +66,14 @@ import cn.sgf.asset.dao.AssetDao;
 import cn.sgf.asset.dao.ClassesDao;
 import cn.sgf.asset.dao.OrganDao;
 import cn.sgf.asset.domain.AssetDO;
+import cn.sgf.asset.domain.CheckInfoDO;
 import cn.sgf.asset.domain.ClassesDO;
 import cn.sgf.asset.domain.SysOrganDO;
 import cn.sgf.asset.domain.UserDO;
 import cn.sgf.asset.dto.AssetDTO;
 import cn.sgf.asset.dto.AssetImportDTO;
 import cn.sgf.asset.dto.AssetSearchDTO;
+import cn.sgf.asset.dto.CheckInfoDTO;
 import cn.sgf.asset.dto.UserDTO;
 import cn.sgf.asset.handler.AssetImportVerifyHandler;
 import cn.sgf.asset.service.AssetService;
@@ -99,6 +102,14 @@ public class AssetController {
 		assetService.save(assetDto, currentUserDto);
 		return RespInfo.success();
 	}
+	
+	@PostMapping("/saveCheckInfo")
+	public RespInfo saveCheckInfo(@RequestHeader("token") String token, CheckInfoDTO checkInfoDto) {
+		logger.info("asset:{}", checkInfoDto);
+		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
+		assetService.saveCheckInfo(checkInfoDto, currentUserDto);
+		return RespInfo.success();
+	}
 
 	@RequestMapping("/delete")
 	public RespInfo del(@RequestHeader("token") String token, Long[] ids) {
@@ -112,9 +123,9 @@ public class AssetController {
 		return RespInfo.success(assetService.list(searchDto));
 	}
 	
-	@GetMapping("/getByCode")
-	public RespInfo getByCode(String code) {
-		return RespInfo.success(assetService.getByCode(code));
+	@GetMapping("/getByCodeAndUsingOrganId")
+	public RespInfo getByCodeAndUsingOrganId(Long code,Long usingOrganId) {
+		return RespInfo.success(assetService.getByCodeAndUsingOrganId(code,usingOrganId));
 	}
 
 	@RequestMapping("/statistics")

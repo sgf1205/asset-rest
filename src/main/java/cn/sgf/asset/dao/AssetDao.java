@@ -21,7 +21,7 @@ public interface AssetDao extends JpaRepository<AssetDO, Long>,JpaSpecificationE
 
 	List<AssetDO> findByDeleteFlag(int code);
 	
-	AssetDO findByCode(String code);
+	AssetDO findByIdAndUsingOrgan(Long id,SysOrganDO usingOrgan);
 	
 	@Modifying
 	@Query("update AssetDO u set u.status = :status where u.id = :id")
@@ -50,4 +50,5 @@ public interface AssetDao extends JpaRepository<AssetDO, Long>,JpaSpecificationE
 			+ "sum(a.money)) "
 			+ " from AssetDO a group by a.usingOrgan")
 	List<AssetStatisticsDTO> statisticsByUsingOrgan();
+	
 }
