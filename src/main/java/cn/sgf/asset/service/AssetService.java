@@ -25,8 +25,5 @@ public interface AssetService {
 	List<AssetStatisticsDTO> statistics(String type);
 
 	AssetDO getByCodeAndUsingOrganId(Long id,Long usingOrganId);
-
-	void saveCheckInfo(CheckInfoDTO checkInfoDto, UserDTO currentUserDto);
-
 	
 }

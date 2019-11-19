@@ -53,8 +53,6 @@ public class AssetServiceImpl implements AssetService {
 	@Autowired
 	private AssetDao assetDao;
 	
-	@Autowired
-	private CheckInfoDao checkInfoDao;
 	
 	@Autowired
 	private SysLogService sysLogService;
@@ -87,23 +85,6 @@ public class AssetServiceImpl implements AssetService {
 		}
 		assetDao.save(assetDo);
 		sysLogService.save(userDo, SysOpsTypeEnum.REGISTER,"登记资产"+assetDo.getName());
-	}
-	
-	@Override
-	public void saveCheckInfo(CheckInfoDTO checkInfoDto, UserDTO currentUserDto) {
-		// TODO Auto-generated method stub
-		CheckInfoDO checkInfoDo=new CheckInfoDO();
-		BeanUtils.copyProperties(currentUserDto, checkInfoDo);
-		checkInfoDo.setUser(checkInfoDto.getUser());
-		checkInfoDo.setCreateTime(new Date());
-		checkInfoDo.setCheckTime(checkInfoDo.getCreateTime());
-		UserDO userDo = new UserDO();
-		userDo.setId(currentUserDto.getId());
-		SysOrganDO organ=new SysOrganDO();
-		organ.setId(checkInfoDto.getOrganId());
-		checkInfoDo.setCreateUesr(userDo);
-		checkInfoDo.setOrgan(organ);
-		checkInfoDao.save(checkInfoDo);
 	}
 	
 	@Override

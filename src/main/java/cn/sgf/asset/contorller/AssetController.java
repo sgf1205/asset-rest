@@ -103,13 +103,6 @@ public class AssetController {
 		return RespInfo.success();
 	}
 	
-	@PostMapping("/saveCheckInfo")
-	public RespInfo saveCheckInfo(@RequestHeader("token") String token, CheckInfoDTO checkInfoDto) {
-		logger.info("asset:{}", checkInfoDto);
-		UserDTO currentUserDto = AuthUtil.getUserByToken(token);
-		assetService.saveCheckInfo(checkInfoDto, currentUserDto);
-		return RespInfo.success();
-	}
 
 	@RequestMapping("/delete")
 	public RespInfo del(@RequestHeader("token") String token, Long[] ids) {
