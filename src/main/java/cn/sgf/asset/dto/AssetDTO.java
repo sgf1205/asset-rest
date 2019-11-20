@@ -24,6 +24,8 @@ public class AssetDTO {
     private ClassesDO classes;
     @Excel(name="资产类别",orderNum = "4")
     private String classesName;
+    
+    private String classesCode;
     @Excel(name="品牌型号",orderNum = "3")
     private String specification;
     private String sn;
@@ -67,6 +69,8 @@ public class AssetDTO {
     private Long organId;//登记部门
     @Excel(name="所属部门",orderNum = "9")
     private String organName;
+    
+    private String organCode;
     
     private Long usingOrganId;
     

@@ -17,6 +17,12 @@ import lombok.Data;
 public class AssetSearchDTO {
 	private String name;
 	
+	private String code;
+	
+	private Long classesId;
+	
+	private String source;
+	
 	private Long registerOrganId; //资产登记部门
 	
 	private Long usingOrganId;//使用部门

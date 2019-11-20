@@ -53,6 +53,12 @@ public class AssetServiceImpl implements AssetService {
 	@Autowired
 	private AssetDao assetDao;
 	
+	@Autowired
+	private ClassesDao classesDao;
+	
+	@Autowired
+	private OrganDao organDao;
+	
 	
 	@Autowired
 	private SysLogService sysLogService;
@@ -63,14 +69,12 @@ public class AssetServiceImpl implements AssetService {
 		// TODO Auto-generated method stub
 		AssetDO assetDo = new AssetDO();
 		BeanUtils.copyProperties(assetDto, assetDo);
-		ClassesDO classesDo = new ClassesDO();
-		classesDo.setId(assetDto.getClassesId());
+		ClassesDO classesDo = classesDao.findById(assetDto.getClassesId()).get();
 		assetDo.setClasses(classesDo);
 		
 		UserDO userDo = new UserDO();
 		userDo.setId(currentUserDto.getId());
-		SysOrganDO organ=new SysOrganDO();
-		organ.setId(assetDto.getOrganId());
+		SysOrganDO organ=organDao.findById(assetDto.getOrganId()).get();
 		assetDo.setRegisterOrgan(organ);
 		if (assetDo.getId() == null) {//新增
 			assetDo.setUsingOrgan(organ);
@@ -78,12 +82,16 @@ public class AssetServiceImpl implements AssetService {
 			assetDo.setRegisterTime(new Date());
 			assetDo.setStatus(StatusEnum.FREE.getCode());
 			assetDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
-			assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
+			//assetDo.setCode(UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
 		}else {//修改
 			assetDo.setEditUser(userDo);
 			assetDo.setEditTime(new Date());
 		}
 		assetDao.save(assetDo);
+		if(StringUtils.isEmpty(assetDo.getCode())) {
+			assetDo.setCode(organ.getCode()+"|"+classesDo.getCode()+"|"+assetDo.getId());
+			assetDao.save(assetDo);
+		}
 		sysLogService.save(userDo, SysOpsTypeEnum.REGISTER,"登记资产"+assetDo.getName());
 	}
 	
@@ -112,6 +120,12 @@ public class AssetServiceImpl implements AssetService {
 				if (StringUtils.isNotEmpty(searchDto.getName())) {
 					predicates.add(cb.like(root.get("name").as(String.class), "%"+searchDto.getName()+"%"));
 				}
+				if (StringUtils.isNotEmpty(searchDto.getSource())) {
+					predicates.add(cb.like(root.get("source").as(String.class), "%"+searchDto.getSource()+"%"));
+				}
+				if(StringUtils.isNotEmpty(searchDto.getCode())) {
+					predicates.add(cb.like(root.get("code").as(String.class), "%"+searchDto.getCode()+"%"));
+				}
 				if (searchDto.getStatus() != null) {
 					predicates.add(cb.equal(root.get("status").as(Integer.class), searchDto.getStatus()));
 				}
@@ -136,6 +150,12 @@ public class AssetServiceImpl implements AssetService {
 				if (searchDto.getMaxMoney() != null) {
 					predicates.add(cb.le(root.get("money").as(Double.class), searchDto.getMaxMoney()));
 				}
+				if(searchDto.getClassesId()!=null) {
+					ClassesDO classesDo=new ClassesDO();
+					classesDo.setId(searchDto.getClassesId());
+					predicates.add(cb.equal(root.get("classes").as(ClassesDO.class), classesDo));
+				}
+				
 				// and到一起的话所有条件就是且关系，or就是或关系
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
