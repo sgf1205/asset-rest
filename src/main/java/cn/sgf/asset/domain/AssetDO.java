@@ -32,8 +32,6 @@ public class AssetDO {
     @JoinColumn(name="classes_id",referencedColumnName = "id")
     private ClassesDO classes;//资产类别
     private String specification;//品牌型号
-    private String sn;
-    private String metering;//计量单位
     private Double money;//单价
     
     

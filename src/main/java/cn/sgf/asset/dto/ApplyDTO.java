@@ -36,6 +36,10 @@ public class ApplyDTO {
 
 	private String applyUser;
 	
+	private String storagePlace;//存放地点
+	
+	private String useUser;//使用人
+	
 	private Date retreatTime;// 归还时间
 
 	private Date createTime;// 创建时间

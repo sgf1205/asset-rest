@@ -28,8 +28,6 @@ public class AssetDTO {
     private String classesCode;
     @Excel(name="品牌型号",orderNum = "3")
     private String specification;
-    private String sn;
-    private String metering;
     @Excel(name="单价",orderNum = "8")
     private Double money;
     @Excel(name="购置时间",orderNum = "6",format = "yyyy-MM-dd")
@@ -43,10 +41,13 @@ public class AssetDTO {
     
     private Integer deleteFlag;
 
+    @Excel(name="备注",orderNum = "16",width=20)
     private String remark;
-    
+    @Excel(name="供应商",orderNum = "17",width=20)
     private String supplier;
+    @Excel(name="供应商联系人",orderNum = "18",width=25)
     private String contacts;
+    @Excel(name="供应商联系方式",orderNum = "19",width=25)
     private String tell;
     
     @Excel(name="财务记账日期",orderNum = "14",format = "yyyy-MM-dd",width=20)
@@ -59,6 +60,8 @@ public class AssetDTO {
     private Integer life;//预计使用年限
     @Excel(name="资产来源",orderNum = "5")
     private String source;//资产来源
+    
+    @Excel(name="维保到期时间",orderNum = "20",format = "yyyy-MM-dd",width=20)
     @DateTimeFormat(pattern="yyyy-MM-dd")  
     private Date expiryTime; //维保到期时间
     private String explain;
@@ -67,7 +70,7 @@ public class AssetDTO {
     private Date registerTime;//登记时间
     
     private Long organId;//登记部门
-    @Excel(name="所属部门",orderNum = "9")
+    @Excel(name="所属单位",orderNum = "9")
     private String organName;
     
     private String organCode;

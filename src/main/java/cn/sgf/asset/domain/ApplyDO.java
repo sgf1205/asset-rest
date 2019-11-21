@@ -42,6 +42,12 @@ public class ApplyDO {
 
 	@Column(name="apply_user")
 	private String applyUser;//申请人
+	
+	@Column(name="storage_place")
+	private String storagePlace;
+	
+	@Column(name="use_user")
+	private String useUser;
 
 	@Column(name = "expect_retreat_time")
 	private Date expectRetreatTime;// 预计归还时间
