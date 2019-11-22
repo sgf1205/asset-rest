@@ -20,4 +20,6 @@ public interface ApplyService {
 	PageResult<ApplyDO> list(Integer type,Date startCreateDate,Date endCreateDate,Pageable pageable);
 
 	void borrowReturn(Long[] ids, UserDTO currentUser);
+
+	void revertReceive(Long[] ids, UserDTO currentUser);
 }

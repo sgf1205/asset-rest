@@ -56,5 +56,14 @@ public class AssetImportDTO {
     
     private Long organId;//登记部门 
     
+    @Excel(name="备注",orderNum = "11",width=20)
+    private String remark;
+    @Excel(name="供应商",orderNum = "12",width=20)
+    private String supplier;
+    @Excel(name="供应商联系人",orderNum = "13",width=25)
+    private String contacts;
+    @Excel(name="供应商联系方式",orderNum = "14",width=25)
+    private String tell;
+    
     
 }

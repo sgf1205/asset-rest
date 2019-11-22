@@ -48,6 +48,13 @@ public class ApplyController {
 		applyService.createApply(applyDto, currentUser);
 		return RespInfo.success();
 	}
+	
+	@RequestMapping("/revert")
+	public RespInfo revert(@RequestHeader("token") String token, Long[] ids) {
+		UserDTO currentUser=AuthUtil.getUserByToken(token);
+		applyService.revertReceive(ids, currentUser);
+		return RespInfo.success();
+	}
 
 
 	@RequestMapping("/list")

@@ -139,6 +139,28 @@ public class ApplyServiceImpl implements ApplyService{
 			sysLogServiceImpl.save(currentUser.getId(), SysOpsTypeEnum.USED_BORROW_RETURN,"归还资产");
 		}
 	}
+	
+	@Override
+	public void revertReceive(Long[] ids, UserDTO currentUser) {
+		// TODO Auto-generated method stub
+		Date now=new Date();
+		for(Long id:ids) {
+			ApplyDO applyDo=applyDao.getOne(id);
+			applyDo.setStatus(StatusEnum.USED_RECEIVE_REVERT.getCode());
+			applyDo.setCreateTime(now);
+			applyDo.getItems().forEach(item->{
+				item.setStatus(StatusEnum.USED_RECEIVE_REVERT.getCode());
+				item.setCreateTime(now);
+				item.getAsset().setUsingOrgan(item.getAsset().getRegisterOrgan());
+				item.getAsset().setStatus(StatusEnum.FREE.getCode());
+				item.getAsset().setUsingTime(null);
+				item.getAsset().setUsingOrgan(null);
+				item.getAsset().setUsingUser(null);
+			});
+			applyDao.save(applyDo);
+			sysLogServiceImpl.save(currentUser.getId(), SysOpsTypeEnum.USED_RECEIVE_REVERT,"资产退库");
+		}
+	}
 
 
 }
