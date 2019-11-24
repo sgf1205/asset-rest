@@ -117,7 +117,7 @@ public class AssetController {
 	}
 	
 	@GetMapping("/getByCodeAndUsingOrganId")
-	public RespInfo getByCodeAndUsingOrganId(Long code,Long usingOrganId) {
+	public RespInfo getByCodeAndUsingOrganId(String code,Long usingOrganId) {
 		return RespInfo.success(assetService.getByCodeAndUsingOrganId(code,usingOrganId));
 	}
 

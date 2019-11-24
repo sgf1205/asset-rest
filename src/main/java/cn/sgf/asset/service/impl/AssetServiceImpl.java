@@ -211,11 +211,11 @@ public class AssetServiceImpl implements AssetService {
 	}
 	
 	@Override
-	public AssetDO getByCodeAndUsingOrganId(Long id,Long usingOrganId) {
+	public AssetDO getByCodeAndUsingOrganId(String code,Long usingOrganId) {
 		// TODO Auto-generated method stub
 		SysOrganDO usingOrgan=new SysOrganDO();
 		usingOrgan.setId(usingOrganId);
-		return assetDao.findByIdAndUsingOrgan(id,usingOrgan);
+		return assetDao.findByCodeAndUsingOrgan(code,usingOrgan);
 	}
 
 }

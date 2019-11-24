@@ -24,6 +24,6 @@ public interface AssetService {
 
 	List<AssetStatisticsDTO> statistics(String type);
 
-	AssetDO getByCodeAndUsingOrganId(Long id,Long usingOrganId);
+	AssetDO getByCodeAndUsingOrganId(String code,Long usingOrganId);
 	
 }
