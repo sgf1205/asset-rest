@@ -6,3 +6,4 @@ resources/static/
 .metadata/
 h2/
 src/main/resources/static/
+/1_import_fail.xls

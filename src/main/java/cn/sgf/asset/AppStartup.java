@@ -1,5 +1,6 @@
 package cn.sgf.asset;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
@@ -15,6 +16,10 @@ public class AppStartup implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+    	ApplicationContext applicationContext=contextRefreshedEvent.getApplicationContext();
+    	if(!"dev".equals(applicationContext.getEnvironment().getActiveProfiles()[0])) {
+    		return;
+    	}
         UserDao userDao = contextRefreshedEvent.getApplicationContext().getBean(UserDao.class);
         UserConfig userConfig=contextRefreshedEvent.getApplicationContext().getBean(UserConfig.class);
         userConfig.getDefaultUsers().forEach(userMap->{

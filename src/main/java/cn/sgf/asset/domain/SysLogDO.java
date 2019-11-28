@@ -30,6 +30,7 @@ public class SysLogDO {
     @Column(name="ops_time")
 	private Date opsTime;
 	
+    @Column(name="`describe`")
 	private String describe;
 	
 	private Integer type;

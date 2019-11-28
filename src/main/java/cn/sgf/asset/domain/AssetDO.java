@@ -61,6 +61,8 @@ public class AssetDO {
     @DateTimeFormat(pattern="yyyy-MM-dd") 
     @Column(name = "expiry_time")
     private Date expiryTime; //维保到期时间
+    
+    @Column(name = "`explain`")
     private String explain;
     
     
