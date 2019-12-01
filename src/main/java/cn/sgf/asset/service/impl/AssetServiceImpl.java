@@ -89,7 +89,7 @@ public class AssetServiceImpl implements AssetService {
 		}
 		assetDao.save(assetDo);
 		if(StringUtils.isEmpty(assetDo.getCode())) {
-			assetDo.setCode(organ.getCode()+"|"+classesDo.getCode()+"|"+assetDo.getId());
+			assetDo.setCode(organ.getCode()+"-"+classesDo.getCode()+"-"+assetDo.getId());
 			assetDao.save(assetDo);
 		}
 		sysLogService.save(userDo, SysOpsTypeEnum.REGISTER,"登记资产"+assetDo.getName());

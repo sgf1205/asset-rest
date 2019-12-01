@@ -13,10 +13,10 @@ spring:
         #hibernate:
         #    ddl-auto: create
 
-logging:
-  file: /logs/log.txt
-  level:
-    root: info
+#logging:
+#  file: /logs/log.txt
+#  level:
+#    root: info
 #默认密码
 #默认管理员账号密码、角色ID
 user:
