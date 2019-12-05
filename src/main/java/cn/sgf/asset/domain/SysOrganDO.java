@@ -23,4 +23,7 @@ public class SysOrganDO {
 	private String code;
 	
 	private Long pid;
+
+	@Column(name="delete_flag")
+	private Integer deleteFlag;
 }

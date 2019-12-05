@@ -15,4 +15,8 @@ public interface OrganDao extends JpaRepository<SysOrganDO, Long> {
 	List<SysOrganDO> findByPid(Long id);
 
 	SysOrganDO findByName(String organName);
+
+	List<SysOrganDO> findByDeleteFlag(Integer deleteFlag);
+
+
 }

@@ -28,6 +28,10 @@ public class AssetSearchDTO {
 	private Long usingOrganId;//使用部门
 	
 	private Integer status;
+
+	private Long[] ids;
+
+	private Integer deleteFlag;
 	
 	private List<Integer> neStatuss;
 	

@@ -2,6 +2,7 @@ package cn.sgf.asset.contorller;
 
 import java.util.List;
 
+import cn.sgf.asset.core.enu.DeleteEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +30,24 @@ public class OrganController {
 	@RequestMapping("/save")
 	public RespInfo save(SysOrganDO organDo) {
 		logger.info("asset:{}",organDo);
+		organDo.setDeleteFlag(DeleteEnum.NO_DELETED.getCode());
 		organDao.save(organDo);
 		return RespInfo.success();
 	}
 	
 	@RequestMapping("/delete")
 	public RespInfo delete(Long id) {
-		organDao.deleteById(id);
+		//organDao.deleteById(id);
+		SysOrganDO organDo=organDao.getOne(id);
+		organDo.setDeleteFlag(DeleteEnum.DELETED.getCode());
+		organDao.save(organDo);
 		return RespInfo.success();
 	}
 	
 	@RequestMapping("/list")
 	public RespInfo list(@RequestParam(required=false)Long id) {
 		if(id==null || id==0) {
-			List<SysOrganDO> list=organDao.findAll();
+			List<SysOrganDO> list=organDao.findByDeleteFlag(DeleteEnum.NO_DELETED.getCode());
 			return RespInfo.success(list);
 		}else {
 			List<SysOrganDO> list=organDao.findByPid(id);

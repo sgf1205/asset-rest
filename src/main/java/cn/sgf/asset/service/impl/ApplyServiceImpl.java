@@ -132,7 +132,6 @@ public class ApplyServiceImpl implements ApplyService{
 				item.getAsset().setUsingOrgan(item.getAsset().getRegisterOrgan());
 				item.getAsset().setStatus(StatusEnum.FREE.getCode());
 				item.getAsset().setUsingTime(null);
-				item.getAsset().setUsingOrgan(null);
 				item.getAsset().setUsingUser(null);
 			});
 			applyDao.save(applyDo);
@@ -154,7 +153,6 @@ public class ApplyServiceImpl implements ApplyService{
 				item.getAsset().setUsingOrgan(item.getAsset().getRegisterOrgan());
 				item.getAsset().setStatus(StatusEnum.FREE.getCode());
 				item.getAsset().setUsingTime(null);
-				item.getAsset().setUsingOrgan(null);
 				item.getAsset().setUsingUser(null);
 			});
 			applyDao.save(applyDo);

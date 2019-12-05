@@ -77,7 +77,7 @@ public class AssetDTO {
     
     private Long usingOrganId;
     
-    @Excel(name="存放地点",orderNum = "11")
+    @Excel(name="当前所在部门",orderNum = "11")
     private String usingOrganName;
     
     @Excel(name="使用人",orderNum = "10")

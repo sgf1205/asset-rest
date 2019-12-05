@@ -110,9 +110,12 @@ public class AssetServiceImpl implements AssetService {
 
 	@Override
 	public PageResult<AssetDTO> list(AssetSearchDTO searchDto) {
-		// TODO Auto-generated method stub
-		Pageable pageable = PageRequest.of(searchDto.getCurrentPage() - 1, searchDto.getPageSize());
-
+		Pageable pageable = null;
+		if(searchDto.getPageSize()==null || searchDto.getCurrentPage()==null){
+			pageable = PageRequest.of(0, 100);
+		}else{
+			pageable = PageRequest.of(searchDto.getCurrentPage() - 1, searchDto.getPageSize());
+		}
 		Specification<AssetDO> querySpecifi = new Specification<AssetDO>() {
 			@Override
 			public Predicate toPredicate(Root<AssetDO> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
@@ -155,8 +158,18 @@ public class AssetServiceImpl implements AssetService {
 					classesDo.setId(searchDto.getClassesId());
 					predicates.add(cb.equal(root.get("classes").as(ClassesDO.class), classesDo));
 				}
-				
+
+				if(searchDto.getIds()!=null && searchDto.getIds().length>0){
+					CriteriaBuilder.In<Long> in=cb.in(root.get("id"));
+					for(Long id:searchDto.getIds()){
+						in.value(id);
+					}
+					predicates.add(in);
+				}else{
+					predicates.add(cb.equal(root.get("deleteFlag").as(Integer.class),DeleteEnum.NO_DELETED.getCode()));
+				}
 				// and到一起的话所有条件就是且关系，or就是或关系
+
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		};
