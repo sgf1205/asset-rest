@@ -72,10 +72,10 @@ public class ApplyServiceImpl implements ApplyService{
 			applyItem.setCreateTime(applyDo.getCreateTime());
 			if(applyDto.getType()==ApplyTypeEnum.BORROW.getCode()) {
 				applyItem.setStatus(StatusEnum.USED_BORROW.getCode());
-				assetDao.editStatus(StatusEnum.USED_BORROW.getCode(),organ,applyDo.getCreateTime(),applyDo.getApplyUser(), assetId);
+				assetDao.editStatus(StatusEnum.USED_BORROW.getCode(),organ,applyDo.getApplyTime(),applyDo.getApplyUser(), assetId);
 			}else if(applyDto.getType()==ApplyTypeEnum.RECEIVE.getCode()) {
 				applyItem.setStatus(StatusEnum.USED_RECEIVE.getCode());
-				assetDao.editStatus(StatusEnum.USED_RECEIVE.getCode(),organ,applyDo.getCreateTime(),applyDo.getApplyUser(), assetId);
+				assetDao.editStatus(StatusEnum.USED_RECEIVE.getCode(),organ,applyDo.getApplyTime(),applyDo.getApplyUser(), assetId);
 			}
 			items.add(applyItem);
 		}
