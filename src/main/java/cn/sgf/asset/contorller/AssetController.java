@@ -7,12 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -131,6 +126,14 @@ public class AssetController {
 	@RequestMapping("/export")
 	public void export(AssetSearchDTO searchDto, HttpServletResponse response) {
 		PageResult<AssetDTO> pageResult = assetService.list(searchDto);
+		Calendar cal = Calendar.getInstance();
+		pageResult.getResult().forEach(assetDTO -> {
+			if(assetDTO.getUsingTime()!=null){
+				cal.setTime(assetDTO.getUsingTime());
+				cal.add(Calendar.HOUR, 8);//导出时间转换成格林尼治时间
+				assetDTO.setUsingTime(cal.getTime());
+			}
+		});
 		Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams("资产清单", "资产清单"), AssetDTO.class,
 				pageResult.getResult());
 		String fileName = "asset";

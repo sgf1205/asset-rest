@@ -97,7 +97,6 @@ public class AssetServiceImpl implements AssetService {
 	
 	@Override
 	public void save(List<AssetImportDTO> assetImportDtos,UserDTO currentUserDto) {
-		// TODO Auto-generated method stub
 		for(AssetImportDTO assetImportDto:assetImportDtos) {
 			AssetDTO assetDto=new AssetDTO();
 			BeanUtils.copyProperties(assetImportDto, assetDto);
