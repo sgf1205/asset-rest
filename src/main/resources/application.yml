@@ -7,7 +7,7 @@ user:
     admin:
         name: 超级管理员
         account: admin
-        password: admin
+        password: admin@1234@qwer
         roleId: 0
 
 spring:
