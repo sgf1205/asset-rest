@@ -76,6 +76,11 @@ public class AssetServiceImpl implements AssetService {
 		userDo.setId(currentUserDto.getId());
 		SysOrganDO organ=organDao.findById(assetDto.getOrganId()).get();
 		assetDo.setRegisterOrgan(organ);
+		if(assetDto.getUsingOrganId()!=null) {
+			SysOrganDO usingOrgan = new SysOrganDO();
+			usingOrgan.setId(assetDto.getUsingOrganId());
+			assetDo.setUsingOrgan(usingOrgan);
+		}
 		if (assetDo.getId() == null) {//新增
 			assetDo.setUsingOrgan(organ);
 			assetDo.setRegisterUser(userDo);

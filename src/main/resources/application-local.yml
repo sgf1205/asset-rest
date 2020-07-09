@@ -4,7 +4,7 @@ spring:
         url:  jdbc:mysql://127.0.0.1:3306/asset?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
-        password: 
+        password: root
 
 # JPA 相关配置
     jpa:

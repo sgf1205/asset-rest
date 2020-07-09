@@ -48,7 +48,7 @@ public interface AssetDao extends JpaRepository<AssetDO, Long>,JpaSpecificationE
 			+ "sum(case a.status when 4 then 1 else 0 end) ,"
 			+ "sum(case a.status when 5 then 1 else 0 end) ,"
 			+ "sum(a.money)) "
-			+ " from AssetDO a group by a.usingOrgan")
+			+ " from AssetDO a where a.deleteFlag=0 group by a.usingOrgan")
 	List<AssetStatisticsDTO> statisticsByUsingOrgan();
 	
 }
